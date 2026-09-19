@@ -19,7 +19,7 @@ BLOCKED
 
 # Current Phase
 
-## Phase 0 — Project Foundation
+## Phase 1 — Repository Intake & Manifest
 
 **Status: DONE**
 
@@ -93,7 +93,7 @@ Phase 0 is DONE only when:
 
 # Phase 1 — Repository Intake & Manifest
 
-**Status: NOT STARTED**
+**Status: DONE**
 
 ## Goal
 
@@ -824,13 +824,12 @@ Do not work on this until repository-level reproduction is reliable.
 
 # Current Next Action
 
-Complete **Phase 0 only**.
-
-After Phase 0 acceptance criteria pass:
+Phase 1 acceptance criteria have passed.
 
 ```text
-Phase 0 → DONE
-Phase 1 → NOT STARTED
+Phase 1 → DONE
+Phase 2 → NOT STARTED
 ```
 
-Repository intake will begin in a later phase.
+Do not begin Phase 2 until Docker daemon availability and the Phase 2 safety
+requirements have been explicitly confirmed.

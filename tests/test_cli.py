@@ -19,10 +19,8 @@ def test_version_command() -> None:
     assert result.stdout.strip() == "ReproAgent 0.1.0"
 
 
-def test_run_command_is_a_placeholder() -> None:
-    repository_url = "https://github.com/example/project"
-    result = runner.invoke(app, ["run", repository_url])
+def test_run_command_rejects_unsupported_url() -> None:
+    result = runner.invoke(app, ["run", "https://gitlab.com/example/project"])
 
-    assert result.exit_code == 0
-    assert "reproduction engine is not implemented yet" in result.stdout
-    assert repository_url in result.stdout
+    assert result.exit_code == 1
+    assert "Only HTTPS GitHub repository URLs are supported" in result.stderr
