@@ -10,6 +10,8 @@ from datetime import UTC, datetime
 from enum import StrEnum
 from typing import TypeAlias
 
+from reproagent.security import reject_sensitive_mapping
+
 JSONScalar: TypeAlias = str | int | float | bool | None
 JSONValue: TypeAlias = JSONScalar | list["JSONValue"] | dict[str, "JSONValue"]
 
@@ -98,7 +100,10 @@ def canonical_json(value: JSONValue | Mapping[str, JSONValue]) -> str:
 def normalize_json_value(value: JSONValue | Mapping[str, JSONValue]) -> JSONValue:
     """Validate and detach JSON-compatible data from caller-owned objects."""
 
-    return json.loads(canonical_json(value))
+    normalized: JSONValue = json.loads(canonical_json(value))
+    if isinstance(normalized, dict):
+        reject_sensitive_mapping(normalized)
+    return normalized
 
 
 def normalize_json_object(

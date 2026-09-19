@@ -7,7 +7,7 @@ evidence-backed results.
 
 ## Development status
 
-Phases 0–3 are complete. The current CLI accepts supported public GitHub URLs,
+Phases 0–4 are complete. The current CLI accepts supported public GitHub URLs,
 clones them into an isolated run workspace, and generates a deterministic
 structural manifest. Docker sandbox infrastructure is available for future
 execution phases, but full reproduction, dependency installation, and CLI
@@ -63,3 +63,11 @@ lifecycle transitions, and append-only audit events. It does not add LLM
 reasoning, autonomous execution, or alter the Docker sandbox. See
 [`docs/STATE_AND_EVENTS.md`](docs/STATE_AND_EVENTS.md) for the lifecycle,
 persistence guarantees, and API boundary.
+
+## LLM provider layer
+
+Phase 4 adds strict provider-independent request, decision, response, usage,
+error, and retry models with offline mocks plus explicit Gemini and Groq REST
+adapters. It does not perform analysis or autonomous execution. See
+[`docs/LLM_PROVIDERS.md`](docs/LLM_PROVIDERS.md) for configuration and
+structured-output guarantees.

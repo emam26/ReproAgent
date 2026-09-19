@@ -19,7 +19,7 @@ BLOCKED
 
 # Current Phase
 
-## Phase 3 — State, Actions & Event Log
+## Phase 4 — LLM Provider Layer
 
 **Status: DONE**
 
@@ -279,7 +279,7 @@ A mock run can:
 
 # Phase 4 — LLM Provider Layer
 
-**Status: NOT STARTED**
+**Status: DONE**
 
 ## Goal
 
@@ -824,12 +824,12 @@ Do not work on this until repository-level reproduction is reliable.
 
 # Current Next Action
 
-Phase 3 acceptance criteria have passed.
+Phase 4 acceptance criteria have passed.
 
 ```text
-Phase 3 → DONE
-Phase 4 → NOT STARTED
+Phase 4 → DONE
+Phase 5 → NOT STARTED
 ```
 
-Do not begin Phase 4 until the Phase 3 control-plane boundaries and the Phase
-2 sandbox safety requirements have been reviewed.
+Do not begin Phase 5 until the provider boundary and deterministic-first
+analysis requirements have been reviewed.
