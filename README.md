@@ -7,11 +7,12 @@ evidence-backed results.
 
 ## Development status
 
-Phases 0–6 are complete. The current CLI accepts supported public GitHub URLs,
+Phases 0–7 are complete. The current CLI accepts supported public GitHub URLs,
 clones them into an isolated run workspace, and generates a deterministic
-structural manifest. Docker sandbox infrastructure is available for future
-execution phases, but full reproduction, dependency installation, and CLI
-execution are not implemented yet.
+structural manifest. The programmatic pipeline can analyze a manifest, create a
+finite plan, and execute that plan in Docker with persisted evidence. Full CLI
+pipeline integration, autonomous repair, and formal reproducibility verification
+are not implemented yet.
 
 ## Installation
 
@@ -85,3 +86,11 @@ Phase 6 converts repository analysis into a bounded, documented-first sequence
 of typed steps with evidence, expected outcomes, risk labels, and deterministic
 command-safety checks. Planning performs no execution. See
 [`docs/REPRODUCTION_PLANNING.md`](docs/REPRODUCTION_PLANNING.md).
+
+## Initial execution engine
+
+Phase 7 executes finite plans sequentially through the Docker sandbox and
+records bounded command results, state events, and run logs. It has no host
+fallback and stops at the first deterministic failure without modifying the
+target repository. A successful workflow outcome is not a final reproducibility
+verdict. See [`docs/EXECUTION_ENGINE.md`](docs/EXECUTION_ENGINE.md).

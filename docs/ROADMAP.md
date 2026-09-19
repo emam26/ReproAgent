@@ -19,7 +19,7 @@ BLOCKED
 
 # Current Phase
 
-## Phase 6 — Reproduction Planner
+## Phase 7 — Initial Execution Engine
 
 **Status: DONE**
 
@@ -415,69 +415,43 @@ Controlled analyses produce deterministic, bounded plans without executing them.
 
 ---
 
-# Phase 7 — Autonomous Debug & Repair Loop
+# Phase 7 — Initial Execution Engine
 
-**Status: NOT STARTED**
+**Status: DONE**
 
 ## Goal
 
-Turn failures into bounded AI-assisted debugging actions.
+Execute a finite `ReproductionPlan` inside the Phase 2 Docker sandbox and
+persist objective evidence through the Phase 3 state/event control plane.
 
 Core loop:
 
 ```text
-EXECUTE
-   ↓
-FAILURE
-   ↓
-COLLECT RELEVANT CONTEXT
-   ↓
-LLM DIAGNOSIS
-   ↓
-STRUCTURED ACTION
-   ↓
-POLICY VALIDATION
-   ↓
-TOOL EXECUTION
-   ↓
-NEW EVIDENCE
-   ↓
-RETRY OR STOP
+ReproductionPlan
+       ↓
+Docker sandbox
+       ↓
+Attempt / ToolCall / ToolResult
+       ↓
+bounded logs and ordered events
 ```
 
-## Initial Allowed Repair Actions
+## Build
 
-Start conservatively:
-
-```text
-inspect_file
-search_repo
-change_command
-change_runtime_version
-install_dependency
-change_dependency_version
-```
-
-Do not immediately give the model unrestricted source editing.
-
-## Safeguards
-
-* maximum attempts,
-* repeated-failure detection,
-* no useless duplicate action,
-* timeout,
-* bounded LLM calls.
+* Docker-only sequential plan execution with no host fallback,
+* exact owned-container lifecycle and cleanup,
+* per-step and overall timeout enforcement,
+* deterministic failure classification,
+* bounded and redacted state, command, event, and log artifacts,
+* first-failure stop policy with no automatic repair.
 
 ## Acceptance Criteria
 
-Intentionally broken fixture repositories demonstrate automatic repair of several controlled failure types.
-
-Examples:
-
-* missing package,
-* wrong dependency version,
-* wrong invocation,
-* undocumented setup step.
+Controlled successful, failing, and timing-out fixture repositories complete the
+manifest-to-analysis-to-plan-to-Docker pipeline. Execution order, output,
+errors, exit codes, timeouts, state events, and exact container cleanup are
+verified. A workflow success remains distinct from a final reproducibility
+verdict.
 
 ---
 
@@ -819,12 +793,12 @@ Do not work on this until repository-level reproduction is reliable.
 
 # Current Next Action
 
-Phase 6 acceptance criteria have passed.
+Phase 7 acceptance criteria have passed.
 
 ```text
-Phase 6 → DONE
-Phase 7 → NOT STARTED
+Phase 7 → DONE
+Phase 8 → NOT STARTED
 ```
 
-Do not begin Phase 7 until plan safety, Docker isolation, and state/event
-integration requirements have been reviewed.
+Stop after Phase 7. Do not begin Phase 8 until controlled file-editing and Git
+tracking requirements are explicitly reviewed and authorized.

@@ -11,6 +11,24 @@ class PlanSafetyError(ValueError):
 
 
 _PROHIBITED_COMMANDS: tuple[tuple[re.Pattern[str], str], ...] = (
+    (
+        re.compile(
+            r"\b(?:[a-z0-9]+_)*(?:api_?key|access_?token|auth_?token|"
+            r"refresh_?token|token|password|passwd|client_?secret|secret|"
+            r"authorization|private_?key|ssh_?key|credentials?)"
+            r"\s*[=:]",
+            re.IGNORECASE,
+        ),
+        "inline credential material",
+    ),
+    (
+        re.compile(r"\bBearer\s+[^\s]+", re.IGNORECASE),
+        "inline bearer credentials",
+    ),
+    (
+        re.compile(r"\b[a-z][a-z0-9+.-]*://[^/\s@]+@", re.IGNORECASE),
+        "URL credentials",
+    ),
     (re.compile(r"(?:^|\s)(?:sudo|su)(?:\s|$)", re.IGNORECASE), "privilege escalation"),
     (re.compile(r"--privileged\b", re.IGNORECASE), "privileged containers"),
     (
@@ -32,7 +50,10 @@ _PROHIBITED_COMMANDS: tuple[tuple[re.Pattern[str], str], ...] = (
         ),
         "broad filesystem deletion",
     ),
-    (re.compile(r"\b(?:mkfs|shutdown|reboot)\b", re.IGNORECASE), "host-destructive command"),
+    (
+        re.compile(r"\b(?:mkfs|shutdown|reboot)\b", re.IGNORECASE),
+        "host-destructive command",
+    ),
     (
         re.compile(
             r"\b(?:apt|apt-get|dnf|yum|pacman|brew|choco|winget)\s+"
@@ -41,8 +62,18 @@ _PROHIBITED_COMMANDS: tuple[tuple[re.Pattern[str], str], ...] = (
         ),
         "system package-manager modification",
     ),
-    (re.compile(r"(?:^|\s)(?:/etc/|/usr/|/var/|[A-Za-z]:\\Windows\\)", re.IGNORECASE), "host system path access"),
-    (re.compile(r"(?:^|\s)(?:~?/\.ssh|~?/\.aws|~?/\.gcloud)(?:/|\s|$)", re.IGNORECASE), "credential path access"),
+    (
+        re.compile(
+            r"(?:^|\s)(?:/etc/|/usr/|/var/|[A-Za-z]:\\Windows\\)", re.IGNORECASE
+        ),
+        "host system path access",
+    ),
+    (
+        re.compile(
+            r"(?:^|\s)(?:~?/\.ssh|~?/\.aws|~?/\.gcloud)(?:/|\s|$)", re.IGNORECASE
+        ),
+        "credential path access",
+    ),
 )
 
 
@@ -52,9 +83,7 @@ def validate_command(command: str, *, max_length: int) -> None:
     if not command.strip():
         raise PlanSafetyError("Plan command cannot be empty.")
     if len(command) > max_length:
-        raise PlanSafetyError(
-            f"Plan command exceeds the {max_length}-character limit."
-        )
+        raise PlanSafetyError(f"Plan command exceeds the {max_length}-character limit.")
     if "\n" in command or "\r" in command:
         raise PlanSafetyError("Multiline plan commands are not allowed.")
     for pattern, reason in _PROHIBITED_COMMANDS:

@@ -201,6 +201,8 @@ def test_gpu_and_external_asset_requirements_remain_visible() -> None:
         "rm -rf /",
         "sudo apt-get install package",
         "cat ~/.ssh/id_rsa",
+        "curl https://user:secret@example.test/archive",
+        "export GITHUB_TOKEN=secret",
     ],
 )
 def test_unsafe_commands_are_rejected(command: str) -> None:
