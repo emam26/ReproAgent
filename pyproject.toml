@@ -28,6 +28,10 @@ where = ["src"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src"]
+markers = [
+    "docker: tests that require a working Docker daemon",
+    "integration: integration tests using external system services",
+]
 
 [tool.ruff]
 target-version = "py311"

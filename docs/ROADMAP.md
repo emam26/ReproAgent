@@ -19,7 +19,7 @@ BLOCKED
 
 # Current Phase
 
-## Phase 1 — Repository Intake & Manifest
+## Phase 2 — Docker Sandbox
 
 **Status: DONE**
 
@@ -168,7 +168,7 @@ A supported repository produces a deterministic manifest without an LLM.
 
 # Phase 2 — Docker Sandbox
 
-**Status: NOT STARTED**
+**Status: DONE**
 
 ## Goal
 
@@ -824,12 +824,12 @@ Do not work on this until repository-level reproduction is reliable.
 
 # Current Next Action
 
-Phase 1 acceptance criteria have passed.
+Phase 2 acceptance criteria have passed.
 
 ```text
-Phase 1 → DONE
-Phase 2 → NOT STARTED
+Phase 2 → DONE
+Phase 3 → NOT STARTED
 ```
 
-Do not begin Phase 2 until Docker daemon availability and the Phase 2 safety
-requirements have been explicitly confirmed.
+Do not begin Phase 3 until the Phase 2 sandbox limitations and safety
+requirements have been reviewed.

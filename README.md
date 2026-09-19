@@ -7,11 +7,11 @@ evidence-backed results.
 
 ## Development status
 
-Phase 0 (Project Foundation) and Phase 1 (Repository Intake & Manifest) are
-complete. The current CLI accepts supported public GitHub URLs, clones them
-into an isolated run workspace, and generates a deterministic structural
-manifest. Full reproduction, dependency installation, and execution are not
-implemented yet.
+Phases 0–2 are complete. The current CLI accepts supported public GitHub URLs,
+clones them into an isolated run workspace, and generates a deterministic
+structural manifest. Docker sandbox infrastructure is available for future
+execution phases, but full reproduction, dependency installation, and CLI
+execution are not implemented yet.
 
 ## Installation
 
@@ -45,3 +45,13 @@ reproagent run https://github.com/example/project
 
 The `run` command performs repository intake only. It does not install
 dependencies, execute target code, run target tests, or perform reproduction.
+
+## Docker sandbox
+
+Phase 2 adds reusable Docker sandbox infrastructure for future execution
+phases. It uses disposable, labeled containers based on `python:3.11-slim`,
+mounts only the requested workspace at `/workspace`, and applies CPU, memory,
+PID, timeout, capability, and `no-new-privileges` limits. Docker must be
+available for sandbox integration tests. The sandbox never falls back to host
+execution and only removes containers it created. Docker isolation is not a
+complete security boundary; later phases will add stronger policy controls.
