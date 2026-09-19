@@ -19,7 +19,7 @@ BLOCKED
 
 # Current Phase
 
-## Phase 2 — Docker Sandbox
+## Phase 3 — State, Actions & Event Log
 
 **Status: DONE**
 
@@ -225,7 +225,7 @@ A fixture project executes inside Docker and returns a structured execution resu
 
 # Phase 3 — State, Actions & Event Log
 
-**Status: NOT STARTED**
+**Status: DONE**
 
 ## Goal
 
@@ -824,12 +824,12 @@ Do not work on this until repository-level reproduction is reliable.
 
 # Current Next Action
 
-Phase 2 acceptance criteria have passed.
+Phase 3 acceptance criteria have passed.
 
 ```text
-Phase 2 → DONE
-Phase 3 → NOT STARTED
+Phase 3 → DONE
+Phase 4 → NOT STARTED
 ```
 
-Do not begin Phase 3 until the Phase 2 sandbox limitations and safety
-requirements have been reviewed.
+Do not begin Phase 4 until the Phase 3 control-plane boundaries and the Phase
+2 sandbox safety requirements have been reviewed.

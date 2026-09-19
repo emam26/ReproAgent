@@ -7,7 +7,7 @@ evidence-backed results.
 
 ## Development status
 
-Phases 0–2 are complete. The current CLI accepts supported public GitHub URLs,
+Phases 0–3 are complete. The current CLI accepts supported public GitHub URLs,
 clones them into an isolated run workspace, and generates a deterministic
 structural manifest. Docker sandbox infrastructure is available for future
 execution phases, but full reproduction, dependency installation, and CLI
@@ -55,3 +55,11 @@ PID, timeout, capability, and `no-new-privileges` limits. Docker must be
 available for sandbox integration tests. The sandbox never falls back to host
 execution and only removes containers it created. Docker isolation is not a
 complete security boundary; later phases will add stronger policy controls.
+
+## Run state and event log
+
+Phase 3 adds a local SQLite control plane for typed run snapshots, legal
+lifecycle transitions, and append-only audit events. It does not add LLM
+reasoning, autonomous execution, or alter the Docker sandbox. See
+[`docs/STATE_AND_EVENTS.md`](docs/STATE_AND_EVENTS.md) for the lifecycle,
+persistence guarantees, and API boundary.
