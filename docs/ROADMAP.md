@@ -21,7 +21,7 @@ BLOCKED
 
 ## Phase 0 — Project Foundation
 
-**Status: IN PROGRESS**
+**Status: DONE**
 
 ---
 
@@ -830,7 +830,7 @@ After Phase 0 acceptance criteria pass:
 
 ```text
 Phase 0 → DONE
-Phase 1 → IN PROGRESS
+Phase 1 → NOT STARTED
 ```
 
-Then begin repository intake.
+Repository intake will begin in a later phase.
