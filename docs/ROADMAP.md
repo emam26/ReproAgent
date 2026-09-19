@@ -19,7 +19,7 @@ BLOCKED
 
 # Current Phase
 
-## Phase 5 — Repository Analysis
+## Phase 6 — Reproduction Planner
 
 **Status: DONE**
 
@@ -380,42 +380,38 @@ No execution repair loop yet.
 
 ---
 
-# Phase 6 — Initial Execution Engine
+# Phase 6 — Reproduction Planner
 
-**Status: NOT STARTED**
+**Status: DONE**
 
 ## Goal
 
-Execute a generated reproduction plan.
+Turn repository analysis into a finite, inspectable reproduction plan.
 
-No autonomous repair yet.
+The planner does not execute commands.
 
 Flow:
 
 ```text
-plan
- ↓
-sandbox
- ↓
-environment setup
- ↓
-target execution
- ↓
-evidence
+RepositoryAnalysis
+       ↓
+ReproductionPlanner
+       ↓
+ReproductionPlan
 ```
 
 ## Build
 
-* plan executor,
-* command records,
-* log capture,
-* output truncation,
-* error fingerprinting,
-* attempt recording.
+* ordered typed plan steps,
+* documented-first evidence priority,
+* evidence provenance,
+* command and working-directory safety checks,
+* step, command, and timeout bounds,
+* explicit risk classification.
 
 ## Acceptance Criteria
 
-Known-good fixture repositories can reach successful execution using their generated plans.
+Controlled analyses produce deterministic, bounded plans without executing them.
 
 ---
 
@@ -823,12 +819,12 @@ Do not work on this until repository-level reproduction is reliable.
 
 # Current Next Action
 
-Phase 5 acceptance criteria have passed.
+Phase 6 acceptance criteria have passed.
 
 ```text
-Phase 5 → DONE
-Phase 6 → NOT STARTED
+Phase 6 → DONE
+Phase 7 → NOT STARTED
 ```
 
-Do not begin Phase 6 until evidence provenance and the documented-first planning
-boundary have been reviewed.
+Do not begin Phase 7 until plan safety, Docker isolation, and state/event
+integration requirements have been reviewed.

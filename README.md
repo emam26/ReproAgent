@@ -7,7 +7,7 @@ evidence-backed results.
 
 ## Development status
 
-Phases 0–5 are complete. The current CLI accepts supported public GitHub URLs,
+Phases 0–6 are complete. The current CLI accepts supported public GitHub URLs,
 clones them into an isolated run workspace, and generates a deterministic
 structural manifest. Docker sandbox infrastructure is available for future
 execution phases, but full reproduction, dependency installation, and CLI
@@ -78,3 +78,10 @@ Phase 5 adds deterministic-first extraction of package, runtime, CI,
 documentation, environment, asset, and hardware evidence with explicit
 provenance and bounded optional LLM interpretation. See
 [`docs/REPOSITORY_ANALYSIS.md`](docs/REPOSITORY_ANALYSIS.md).
+
+## Reproduction planning
+
+Phase 6 converts repository analysis into a bounded, documented-first sequence
+of typed steps with evidence, expected outcomes, risk labels, and deterministic
+command-safety checks. Planning performs no execution. See
+[`docs/REPRODUCTION_PLANNING.md`](docs/REPRODUCTION_PLANNING.md).
