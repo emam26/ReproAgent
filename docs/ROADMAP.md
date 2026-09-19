@@ -19,7 +19,7 @@ BLOCKED
 
 # Current Phase
 
-## Phase 7 — Initial Execution Engine
+## Phase 7.5 — Diagnostic & Verification Foundation
 
 **Status: DONE**
 
@@ -455,130 +455,105 @@ verdict.
 
 ---
 
-# Phase 8 — Controlled File Editing & Git Tracking
+# Phase 7.5 — Diagnostic & Verification Foundation
 
-**Status: NOT STARTED**
+**Status: DONE**
 
 ## Goal
 
-Permit minimal configuration/source changes while preserving provenance.
+Convert raw execution failure into compact deterministic evidence before any
+LLM diagnosis.
 
 ## Build
 
-* patch application,
-* Git diff capture,
-* rollback,
-* pre-change snapshots,
-* allowed-path policy.
-
-## Rules
-
-Prefer:
-
-```text
-environment fix
-configuration fix
-dependency fix
-```
-
-before:
-
-```text
-source-code change
-```
+* typed failure taxonomy and bounded traceback/build/test/network extraction,
+* PEP-aware requirement, version, marker, pip report, inspect, and check parsing,
+* Docker-only environment fingerprint and pip diagnostic commands,
+* AST import/dependency comparison with explicit heuristic mappings,
+* bounded evidence builder and stable repeated-failure signatures,
+* repository-local checkpoint, dataset, URL, LFS, submodule, and DVC indicators,
+* typed objective verification contracts without final status classification.
 
 ## Acceptance Criteria
 
-The agent can:
-
-1. make a small patch,
-2. verify it,
-3. record the diff,
-4. roll it back if unsuccessful.
+Major failure families, unknown failures, evidence bounds, secret redaction,
+dependency formats, environment facts, import mappings, asset indicators, and
+verification contracts have deterministic fixture coverage.
 
 ---
 
-# Phase 9 — Verification Engine
+# Phase 8 — Autonomous Diagnosis
 
 **Status: NOT STARTED**
 
 ## Goal
 
-Separate objective success from LLM judgment.
+Turn compact deterministic evidence into a bounded structured diagnosis and a
+permitted next action.
 
 ## Build
 
-Verification rules for:
-
-```text
-installation
-command success
-test execution
-test results
-expected files
-expected text patterns
-custom goal
-```
-
-Determine verification level:
-
-```text
-L0
-L1
-L2
-L3
-```
+* deterministic-first diagnosis,
+* strict structured hypotheses and evidence references,
+* bounded LLM calls and diagnosis attempts,
+* repeated-signature and repeated-diagnosis stopping,
+* risk and action-policy enforcement,
+* persistence through the Phase 3 event infrastructure.
 
 ## Acceptance Criteria
 
-Identical execution evidence always produces the same verification result regardless of model output.
+Mock-provider fixtures prove valid diagnosis, malformed-output rejection,
+unsupported-action rejection, provenance, confidence/risk handling, repetition
+stopping, call limits, and secret exclusion.
 
 ---
 
-# Phase 10 — Reproduction Report & Artifacts
+# Phase 9 — Controlled Repair Tools
 
 **Status: NOT STARTED**
 
 ## Goal
 
-Produce useful evidence even when reproduction fails.
+Convert an accepted diagnosis into one finite policy-checked repair experiment.
 
-## Generate
+## Build
 
-```text
-report.md
-run.json
-events.jsonl
-commands.jsonl
-patches.diff
-environment.json
-reproduce.sh
-logs/
-```
-
-## Report Should Include
-
-```text
-summary
-repository
-commit SHA
-goal
-status
-verification level
-environment
-documented procedure
-actual procedure
-failures
-repairs
-modifications
-test results
-remaining blockers
-exact reproduction instructions
-```
+* finite repair vocabulary,
+* evidence, risk, reversibility, and expected-effect requirements,
+* deterministic policy validation,
+* bounded Python/dependency/asset experiments,
+* before/after signatures and evidence-improvement records,
+* no host execution or global Docker management.
 
 ## Acceptance Criteria
 
-A human can understand what happened without reading internal implementation details.
+Each repair action and policy rejection has fixture coverage, including limits,
+repetition blocking, persistence, and rollback metadata.
+
+---
+
+# Phase 10 — Controlled File Editing & Rollback
+
+**Status: NOT STARTED**
+
+## Goal
+
+Allow minimal auditable workspace edits, exact diffs, and rollback, then wire the
+controlled intake-to-retry pipeline for end-to-end fixtures.
+
+## Build
+
+* workspace-confined read, replacement, patch, diff, and rollback tools,
+* path, symlink, file-size, patch-size, and changed-file limits,
+* original/new hashes and `patches.diff` audit artifact,
+* controlled CLI pipeline wiring,
+* working, repaired, and policy-stopped Docker fixtures.
+
+## Acceptance Criteria
+
+Edits cannot escape the target workspace, exact changes are auditable and
+reversible, retries remain Docker-only, and controlled end-to-end fixtures cover
+success, repair, and clean stopping. Formal final verification remains later.
 
 ---
 
@@ -793,12 +768,12 @@ Do not work on this until repository-level reproduction is reliable.
 
 # Current Next Action
 
-Phase 7 acceptance criteria have passed.
+Phase 7.5 acceptance criteria have passed.
 
 ```text
-Phase 7 → DONE
-Phase 8 → NOT STARTED
+Phase 7.5 → DONE
+Phase 8   → NOT STARTED
 ```
 
-Stop after Phase 7. Do not begin Phase 8 until controlled file-editing and Git
-tracking requirements are explicitly reviewed and authorized.
+Next: implement bounded autonomous diagnosis. Do not begin Phase 9 until Phase 8
+is tested, documented, committed, and pushed.

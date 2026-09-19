@@ -9,6 +9,7 @@ description = "A reproducibility auditor for open-source software."
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
+    "packaging>=24.0",
     "pydantic>=2.0",
     "typer>=0.12",
 ]

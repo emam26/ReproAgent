@@ -7,7 +7,7 @@ evidence-backed results.
 
 ## Development status
 
-Phases 0–7 are complete. The current CLI accepts supported public GitHub URLs,
+Phases 0–7.5 are complete. The current CLI accepts supported public GitHub URLs,
 clones them into an isolated run workspace, and generates a deterministic
 structural manifest. The programmatic pipeline can analyze a manifest, create a
 finite plan, and execute that plan in Docker with persisted evidence. Full CLI
@@ -94,3 +94,11 @@ records bounded command results, state events, and run logs. It has no host
 fallback and stops at the first deterministic failure without modifying the
 target repository. A successful workflow outcome is not a final reproducibility
 verdict. See [`docs/EXECUTION_ENGINE.md`](docs/EXECUTION_ENGINE.md).
+
+## Diagnostic evidence foundation
+
+Phase 7.5 adds deterministic failure classification, bounded log extraction,
+PEP-aware dependency intelligence, Docker-only pip/environment inspection,
+import analysis, repeated-failure signatures, asset indicators, and typed
+verification contracts. No autonomous diagnosis or repair occurs in this
+layer. See [`docs/DIAGNOSTICS.md`](docs/DIAGNOSTICS.md).
