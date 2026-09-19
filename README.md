@@ -7,7 +7,7 @@ evidence-backed results.
 
 ## Development status
 
-Phases 0–4 are complete. The current CLI accepts supported public GitHub URLs,
+Phases 0–5 are complete. The current CLI accepts supported public GitHub URLs,
 clones them into an isolated run workspace, and generates a deterministic
 structural manifest. Docker sandbox infrastructure is available for future
 execution phases, but full reproduction, dependency installation, and CLI
@@ -71,3 +71,10 @@ error, and retry models with offline mocks plus explicit Gemini and Groq REST
 adapters. It does not perform analysis or autonomous execution. See
 [`docs/LLM_PROVIDERS.md`](docs/LLM_PROVIDERS.md) for configuration and
 structured-output guarantees.
+
+## Repository analysis
+
+Phase 5 adds deterministic-first extraction of package, runtime, CI,
+documentation, environment, asset, and hardware evidence with explicit
+provenance and bounded optional LLM interpretation. See
+[`docs/REPOSITORY_ANALYSIS.md`](docs/REPOSITORY_ANALYSIS.md).

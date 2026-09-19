@@ -19,7 +19,7 @@ BLOCKED
 
 # Current Phase
 
-## Phase 4 — LLM Provider Layer
+## Phase 5 — Repository Analysis
 
 **Status: DONE**
 
@@ -330,9 +330,9 @@ Core application logic can consume provider-independent structured decisions.
 
 ---
 
-# Phase 5 — Repository Analysis & Planning
+# Phase 5 — Repository Analysis
 
-**Status: NOT STARTED**
+**Status: DONE**
 
 ## Goal
 
@@ -358,7 +358,6 @@ examples
 
 ```text
 RepositoryAnalysis
-ReproductionPlan
 ```
 
 Attempt to determine:
@@ -375,7 +374,7 @@ Attempt to determine:
 
 ## Acceptance Criteria
 
-A small controlled repository set produces sensible structured plans.
+A small controlled repository set produces sensible structured analyses.
 
 No execution repair loop yet.
 
@@ -824,12 +823,12 @@ Do not work on this until repository-level reproduction is reliable.
 
 # Current Next Action
 
-Phase 4 acceptance criteria have passed.
+Phase 5 acceptance criteria have passed.
 
 ```text
-Phase 4 → DONE
-Phase 5 → NOT STARTED
+Phase 5 → DONE
+Phase 6 → NOT STARTED
 ```
 
-Do not begin Phase 5 until the provider boundary and deterministic-first
-analysis requirements have been reviewed.
+Do not begin Phase 6 until evidence provenance and the documented-first planning
+boundary have been reviewed.
