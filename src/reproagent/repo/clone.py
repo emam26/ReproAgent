@@ -98,8 +98,19 @@ def _run_git(
     """Run Git without a shell and with a bounded timeout."""
 
     try:
-        environment = os.environ.copy()
-        environment["GIT_TERMINAL_PROMPT"] = "0"
+        environment = {
+            "PATH": os.environ.get("PATH", ""),
+            "GIT_TERMINAL_PROMPT": "0",
+            "GIT_CONFIG_NOSYSTEM": "1",
+            "GIT_CONFIG_SYSTEM": os.devnull,
+            "GIT_CONFIG_GLOBAL": os.devnull,
+            "GIT_ATTR_NOSYSTEM": "1",
+            "GIT_OPTIONAL_LOCKS": "0",
+            "GIT_LFS_SKIP_SMUDGE": "1",
+            "GIT_CONFIG_COUNT": "1",
+            "GIT_CONFIG_KEY_0": "core.hooksPath",
+            "GIT_CONFIG_VALUE_0": os.devnull,
+        }
         completed = subprocess.run(
             ["git", *args],
             cwd=str(cwd) if cwd is not None else None,
@@ -137,13 +148,21 @@ def clone_repository(
     hooks, dependencies, or scripts are executed by this function.
     """
 
-    destination = Path(destination).expanduser().resolve()
+    destination_input = Path(destination).expanduser()
+    if destination_input.is_symlink():
+        raise CloneError("Git clone destination cannot be a symlink.")
+    destination = destination_input.resolve()
+    if destination.exists():
+        raise CloneError("Git clone destination must be a new real directory path.")
     destination.parent.mkdir(parents=True, exist_ok=True)
     _run_git(
         [
             "-c",
             "credential.helper=",
+            "-c",
+            "core.hooksPath=NUL" if os.name == "nt" else "core.hooksPath=/dev/null",
             "clone",
+            "--no-recurse-submodules",
             "--quiet",
             "--",
             repository_url,

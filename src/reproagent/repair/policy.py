@@ -2,14 +2,13 @@
 
 from __future__ import annotations
 
-import ipaddress
 import re
-from urllib.parse import urlsplit
 
 from packaging.requirements import InvalidRequirement, Requirement
 from packaging.version import InvalidVersion, Version
 
 from reproagent.diagnostics import DiagnosticContext
+from reproagent.network import PublicUrlError, validate_public_url
 from reproagent.planning.safety import PlanSafetyError, validate_command
 
 from .models import (
@@ -59,25 +58,13 @@ def _require_requirement(value: object, *, field: str) -> str:
 def _validate_public_documented_url(value: object, context: DiagnosticContext) -> str:
     if not isinstance(value, str):
         raise RepairPolicyError("Asset URL must be a string.")
-    parsed = urlsplit(value)
-    if parsed.scheme != "https" or not parsed.hostname or parsed.username or parsed.password:
-        raise RepairPolicyError("Asset URL must be HTTPS without embedded credentials.")
-    if parsed.query or parsed.fragment:
-        raise RepairPolicyError("Asset URL cannot contain query or fragment credentials.")
-    host = parsed.hostname.lower().rstrip(".")
-    if host in {"localhost", "localhost.localdomain"} or host.endswith(".local"):
-        raise RepairPolicyError("Private/local asset destinations are not allowed.")
     try:
-        address = ipaddress.ip_address(host)
-    except ValueError:
-        address = None
-    if address is not None and (
-        address.is_private or address.is_loopback or address.is_link_local or address.is_reserved
-    ):
-        raise RepairPolicyError("Private/internal asset destinations are not allowed.")
+        validated = validate_public_url(value)
+    except PublicUrlError as exc:
+        raise RepairPolicyError(str(exc)) from exc
     if value not in "\n".join(item.content for item in context.evidence):
         raise RepairPolicyError("Asset URL must be present in trusted evidence.")
-    return value
+    return validated
 
 
 def validate_repair_action(

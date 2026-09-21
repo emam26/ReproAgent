@@ -37,11 +37,18 @@ class SandboxSecurityError(SandboxError):
 class ResourceLimits(BaseModel):
     """Resource limits applied to a Docker container."""
 
-    memory: str = Field(default="512m", min_length=1)
-    cpus: float = Field(default=1.0, gt=0)
-    pids_limit: int = Field(default=128, gt=0)
-    command_timeout_seconds: float = Field(default=30.0, gt=0)
-    create_timeout_seconds: float = Field(default=120.0, gt=0)
+    memory: str = Field(
+        default="512m",
+        min_length=2,
+        max_length=20,
+        pattern=r"^[0-9]+(?:[bkmg]|ki|mi|gi|ti)$",
+    )
+    cpus: float = Field(default=1.0, gt=0, le=8)
+    pids_limit: int = Field(default=128, ge=1, le=4_096)
+    command_timeout_seconds: float = Field(default=30.0, gt=0, le=3_600)
+    create_timeout_seconds: float = Field(default=120.0, gt=0, le=600)
+    max_workspace_bytes: int = Field(default=100_000_000, ge=1_024, le=10_000_000_000)
+    max_workspace_files: int = Field(default=20_000, ge=1, le=1_000_000)
 
 
 class SandboxConfig(BaseModel):
@@ -50,7 +57,7 @@ class SandboxConfig(BaseModel):
     image: str = Field(default="python:3.11-slim", min_length=1)
     workspace_path: Path
     run_id: str = Field(min_length=1)
-    network: Literal["bridge", "none"] = "bridge"
+    network: Literal["bridge", "none"] = "none"
     resource_limits: ResourceLimits = Field(default_factory=ResourceLimits)
 
 

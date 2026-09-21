@@ -129,3 +129,11 @@ patches, SHA-256 before/after evidence, size/path/symlink limits, exact
 retry boundary. A successful retry remains an experiment until formal
 verification and clean-room reproduction. See
 [`docs/WORKSPACE_REPAIRS.md`](docs/WORKSPACE_REPAIRS.md).
+
+## Untrusted repository security
+
+Phase 11 hardens Docker execution and Git intake with network-denied defaults,
+resource and workspace bounds, SSRF-safe public URL handling, redirect and
+download limits, sterile noninteractive Git configuration, disabled recursive
+submodules/LFS smudge, and malicious-fixture coverage. See
+[`docs/SECURITY.md`](docs/SECURITY.md).

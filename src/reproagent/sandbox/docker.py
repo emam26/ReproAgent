@@ -201,6 +201,8 @@ class DockerSandbox(Sandbox):
             raise SandboxSecurityError(
                 f"Workspace must be a real directory: {workspace}"
             )
+        file_count = 0
+        total_bytes = 0
         for current, directories, files in os.walk(
             workspace,
             topdown=True,
@@ -232,6 +234,18 @@ class DockerSandbox(Sandbox):
                     raise SandboxSecurityError(
                         "Workspace contains a credential or .env file that cannot be mounted."
                     )
+                try:
+                    file_size = file_path.stat().st_size
+                except OSError as exc:
+                    raise SandboxSecurityError(
+                        "Workspace file metadata could not be inspected safely."
+                    ) from exc
+                file_count += 1
+                total_bytes += file_size
+                if file_count > self.config.resource_limits.max_workspace_files:
+                    raise SandboxSecurityError("Workspace exceeds the file-count limit.")
+                if total_bytes > self.config.resource_limits.max_workspace_bytes:
+                    raise SandboxSecurityError("Workspace exceeds the byte-size limit.")
 
     def _invoke(
         self,

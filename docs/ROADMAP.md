@@ -19,7 +19,7 @@ BLOCKED
 
 # Current Phase
 
-## Phase 10 — Controlled File Editing & Rollback
+## Phase 11 — Safety Hardening
 
 **Status: DONE**
 
@@ -560,7 +560,7 @@ success, repair, and clean stopping. Formal final verification remains later.
 
 # Phase 11 — Safety Hardening
 
-**Status: NOT STARTED**
+**Status: DONE**
 
 ## Goal
 
@@ -573,13 +573,10 @@ Treat repository code as potentially hostile.
 * no Docker socket,
 * capability dropping,
 * no-new-privileges,
-* memory limits,
-* CPU limits,
-* process limits,
-* command timeout,
-* download limits,
-* network policy,
-* workspace restrictions,
+* memory, CPU, process, command, workspace, download, and log limits,
+* network-denied default with explicit plan opt-in,
+* SSRF and redirect revalidation,
+* sterile noninteractive Git intake with no recursive submodules/LFS smudge,
 * unsafe-command handling.
 
 Add terminal outcome:
@@ -590,7 +587,7 @@ UNSAFE
 
 ## Acceptance Criteria
 
-Safety tests demonstrate that prohibited host access and dangerous operations are rejected or isolated.
+Safety tests demonstrate that prohibited host access and dangerous operations are rejected or isolated, including network denial, workspace bounds, URL/redirect policy, Git hardening, credential exclusion, and process limits.
 
 ---
 
@@ -769,9 +766,9 @@ Do not work on this until repository-level reproduction is reliable.
 
 # Current Next Action
 
-Phase 10 acceptance criteria have passed.
+Phase 11 acceptance criteria have passed.
 
 ```text
-Phase 10 → DONE
-Phase 11 → NOT STARTED
+Phase 11 → DONE
+Phase 12 → NOT STARTED
 ```

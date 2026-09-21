@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import base64
 import subprocess
 from pathlib import Path
 
@@ -229,5 +230,53 @@ def test_docker_container_has_ownership_labels(docker_sandbox) -> None:
     )
 
     assert inspect.stdout.strip() == "true"
+    sandbox.destroy()
+    _assert_removed(command, container_id)
+
+
+@pytest.mark.docker
+@pytest.mark.integration
+def test_docker_disables_network_by_default(docker_sandbox) -> None:
+    sandbox, command = docker_sandbox
+    container_id = sandbox.container_id
+    result = sandbox.execute(
+        "python -c \"import urllib.request; urllib.request.urlopen('https://example.com', timeout=1)\"",
+        timeout_seconds=5,
+    )
+
+    assert sandbox.config.network == "none"
+    assert result.exit_code != 0 or result.timed_out is True
+    sandbox.destroy()
+    _assert_removed(command, container_id)
+
+
+@pytest.mark.docker
+@pytest.mark.integration
+def test_docker_pid_limit_contains_safe_process_abuse_fixture(docker_sandbox) -> None:
+    sandbox, command = docker_sandbox
+    container_id = sandbox.container_id
+    source = (
+        "import os\n"
+        "children=[]\n"
+        "for _ in range(256):\n"
+        "    try:\n"
+        "        pid=os.fork()\n"
+        "    except OSError:\n"
+        "        break\n"
+        "    if pid == 0:\n"
+        "        os._exit(0)\n"
+        "    children.append(pid)\n"
+        "for pid in children:\n"
+        "    os.waitpid(pid, 0)\n"
+        "print(len(children))\n"
+    )
+    encoded = base64.b64encode(source.encode()).decode()
+    result = sandbox.execute(
+        f'python -c "import base64; exec(base64.b64decode(\'{encoded}\'))"',
+        timeout_seconds=10,
+    )
+
+    assert result.exit_code == 0
+    assert int(result.stdout.strip()) < 256
     sandbox.destroy()
     _assert_removed(command, container_id)
