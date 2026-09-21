@@ -146,3 +146,10 @@ artifact checks. It reports explicit verification levels and distinguishes
 execution failure, failed conditions, unavailable evidence, and unspecified
 contracts. It never executes a target command for verification and never treats
 LLM output as proof. See [`docs/VERIFICATION.md`](docs/VERIFICATION.md).
+
+## Final reproducibility status
+
+Phase 13 computes `REPRODUCED`, `PARTIAL`, `BLOCKED`, `FAILED`, or `UNSAFE` from
+machine-readable verification, workflow, clean-room, and safety evidence. The
+status is separate from `RunOutcome`; a successful workflow alone cannot claim
+reproduction. See [`docs/STATUS.md`](docs/STATUS.md).

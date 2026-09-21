@@ -19,7 +19,7 @@ BLOCKED
 
 # Current Phase
 
-## Phase 12 — Objective Verification Engine
+## Phase 13 — Final Reproducibility Status
 
 **Status: DONE**
 
@@ -616,42 +616,27 @@ file facts, and secret-safe bounded evidence.
 
 ---
 
-# Phase 13 — API and Dashboard
+# Phase 13 — Final Reproducibility Status
 
-**Status: NOT STARTED**
+**Status: DONE**
 
 ## Goal
 
-Turn the proven engine into a usable product.
+Compute a deterministic final reproduction status from objective evidence and
+policy.
 
-Do not begin before core evaluation works.
+## Build
 
-Potential API:
-
-```text
-POST /runs
-GET /runs/{id}
-GET /runs/{id}/events
-GET /runs/{id}/report
-```
-
-Potential UI:
-
-```text
-repository
-current stage
-events
-commands
-errors
-repairs
-Git diff
-verification
-report
-```
+* separate `REPRODUCED`, `PARTIAL`, `BLOCKED`, `FAILED`, and `UNSAFE` models,
+* deterministic rules over workflow, verification, safety, and clean-room facts,
+* machine-readable reason and evidence references,
+* no LLM-derived status authority.
 
 ## Acceptance Criteria
 
-A user can submit a repository and inspect the run without using the CLI.
+Status rules are exhaustively fixture-tested, including the distinction between
+workflow success and reproduction, unavailable verification, unsafe findings,
+and clean-room requirements.
 
 ---
 
@@ -723,9 +708,9 @@ Do not work on this until repository-level reproduction is reliable.
 
 # Current Next Action
 
-Phase 12 acceptance criteria have passed.
+Phase 13 acceptance criteria have passed.
 
 ```text
-Phase 12 → DONE
-Phase 13 → NOT STARTED
+Phase 13 → DONE
+Phase 14 → NOT STARTED
 ```
