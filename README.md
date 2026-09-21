@@ -132,7 +132,7 @@ verification and clean-room reproduction. See
 
 ## Untrusted repository security
 
-Phase 11 hardens Docker execution and Git intake with network-denied defaults,
+Phase 15 hardens Docker execution and Git intake with network-denied defaults,
 resource and workspace bounds, SSRF-safe public URL handling, redirect and
 download limits, sterile noninteractive Git configuration, disabled recursive
 submodules/LFS smudge, and malicious-fixture coverage. See
@@ -140,7 +140,7 @@ submodules/LFS smudge, and malicious-fixture coverage. See
 
 ## Objective verification
 
-Phase 12 evaluates recorded execution evidence and bounded workspace facts with
+Phase 11 evaluates recorded execution evidence and bounded workspace facts with
 deterministic installation, command, test, expected-output, environment, and
 artifact checks. It reports explicit verification levels and distinguishes
 execution failure, failed conditions, unavailable evidence, and unspecified
@@ -149,14 +149,14 @@ LLM output as proof. See [`docs/VERIFICATION.md`](docs/VERIFICATION.md).
 
 ## Final reproducibility status
 
-Phase 13 computes `REPRODUCED`, `PARTIAL`, `BLOCKED`, `FAILED`, or `UNSAFE` from
+Phase 12 computes `REPRODUCED`, `PARTIAL`, `BLOCKED`, `FAILED`, or `UNSAFE` from
 machine-readable verification, workflow, clean-room, and safety evidence. The
 status is separate from `RunOutcome`; a successful workflow alone cannot claim
 reproduction. See [`docs/STATUS.md`](docs/STATUS.md).
 
 ## Reports and run artifacts
 
-Phase 14 writes schema-versioned `run.json` and `report.md` artifacts, clearly
+Phase 13 writes schema-versioned `run.json` and `report.md` artifacts, clearly
 separating official documented reproduction from agent-assisted attempts. When
 real data exists it also writes events, commands, environment, exact patches,
 and a validated reproduction recipe without fabricating empty artifacts or
@@ -164,8 +164,16 @@ secrets. See [`docs/REPORTING.md`](docs/REPORTING.md).
 
 ## Clean-room reproduction
 
-Phase 15 derives a final recipe, copies the source into a new bounded workspace,
+Phase 14 derives a final recipe, copies the source into a new bounded workspace,
 reapplies only the real patch, creates a new Docker sandbox, verifies the run,
 and requires clean-room evidence before `REPRODUCED`. It emits portable recipe
 artifacts when their inputs are real and does not fabricate environment locks or
 Dockerfiles. See [`docs/CLEAN_ROOM.md`](docs/CLEAN_ROOM.md).
+
+## Run observability
+
+Phase 16 derives bounded run metrics and a stable timeline from the existing
+append-only event stream. It captures durations, attempts, repairs, LLM usage,
+failure categories, verification/status, Docker identities, and network modes
+without introducing a second logging backend or copying raw event payloads. See
+[`docs/OBSERVABILITY.md`](docs/OBSERVABILITY.md).

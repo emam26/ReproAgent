@@ -1,6 +1,6 @@
 # Deterministic Reproduction Status
 
-Phase 13 adds `compute_reproduction_status`, a policy function separate from
+Phase 12 adds `compute_reproduction_status`, a policy function separate from
 the control-plane `RunOutcome`. A successful workflow is only one input; it is
 not itself a reproduction claim.
 

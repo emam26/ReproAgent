@@ -1,6 +1,6 @@
 # Untrusted Repository Security Boundary
 
-Phase 11 hardens the existing Docker-only execution and intake paths. The
+Phase 15 hardens the existing Docker-only execution and intake paths. The
 controls are intentionally layered; this is a containment boundary for the V1
 auditor, not a claim that arbitrary hostile code is harmless.
 

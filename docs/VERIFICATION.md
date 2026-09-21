@@ -1,6 +1,6 @@
 # Objective Verification Engine
 
-Phase 12 evaluates a finite `VerificationContract` using deterministic facts.
+Phase 11 evaluates a finite `VerificationContract` using deterministic facts.
 It does not run a new target command and it never accepts an LLM statement as
 verification evidence.
 

@@ -1,6 +1,6 @@
 # Clean-room Reproduction
 
-Phase 15 derives a `CleanRoomRecipe` from a real reproduction plan and optional
+Phase 14 derives a `CleanRoomRecipe` from a real reproduction plan and optional
 real repair diff. `CleanRoomRunner` creates a new run ID, a new workspace, and
 new Docker sandbox. It copies only regular files under bounded file-count and
 byte limits, rejects symlinks, reapplies only the supplied diff, writes a

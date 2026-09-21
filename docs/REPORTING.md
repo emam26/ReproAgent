@@ -1,6 +1,6 @@
 # Reproducibility Reports and Run Artifacts
 
-Phase 14 writes a schema-versioned `run.json` and human-readable `report.md`
+Phase 13 writes a schema-versioned `run.json` and human-readable `report.md`
 from supplied run facts. The report keeps two signatures distinct:
 
 * Official documented reproduction: the initial attempt and documented setup.

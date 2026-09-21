@@ -171,6 +171,18 @@ def test_successful_plan_runs_in_order_and_persists_evidence(tmp_path: Path) -> 
     assert [event.event_type for event in events].count(
         EventType.TOOL_RESULT_RECORDED
     ) == 2
+    tool_calls = [event for event in events if event.event_type is EventType.TOOL_CALLED]
+    assert all(
+        event.payload["tool_call"]["arguments"]["network_mode"] == "none"
+        for event in tool_calls
+    )
+    tool_results = [
+        event for event in events if event.event_type is EventType.TOOL_RESULT_RECORDED
+    ]
+    assert all(
+        event.payload["tool_result"]["payload"]["network_mode"] == "none"
+        for event in tool_results
+    )
     command_lines = (
         (run_directory / "commands.jsonl").read_text(encoding="utf-8").splitlines()
     )

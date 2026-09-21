@@ -19,7 +19,7 @@ BLOCKED
 
 # Current Phase
 
-## Phase 15 — Clean-room Reproduction
+## Phase 16 — Observability
 
 **Status: DONE**
 
@@ -558,40 +558,7 @@ success, repair, and clean stopping. Formal final verification remains later.
 
 ---
 
-# Phase 11 — Safety Hardening
-
-**Status: DONE**
-
-## Goal
-
-Treat repository code as potentially hostile.
-
-## Review / Implement
-
-* no host execution,
-* no secret mounts,
-* no Docker socket,
-* capability dropping,
-* no-new-privileges,
-* memory, CPU, process, command, workspace, download, and log limits,
-* network-denied default with explicit plan opt-in,
-* SSRF and redirect revalidation,
-* sterile noninteractive Git intake with no recursive submodules/LFS smudge,
-* unsafe-command handling.
-
-Add terminal outcome:
-
-```text
-UNSAFE
-```
-
-## Acceptance Criteria
-
-Safety tests demonstrate that prohibited host access and dangerous operations are rejected or isolated, including network denial, workspace bounds, URL/redirect policy, Git hardening, credential exclusion, and process limits.
-
----
-
-# Phase 12 — Objective Verification Engine
+# Phase 11 — Objective Verification Engine
 
 **Status: DONE**
 
@@ -616,7 +583,7 @@ file facts, and secret-safe bounded evidence.
 
 ---
 
-# Phase 13 — Final Reproducibility Status
+# Phase 12 — Final Reproducibility Status
 
 **Status: DONE**
 
@@ -640,7 +607,7 @@ and clean-room requirements.
 
 ---
 
-# Phase 14 — Reporting + Run Artifacts
+# Phase 13 — Reporting + Run Artifacts
 
 **Status: DONE**
 
@@ -663,7 +630,7 @@ gaps without fabricating facts or persisting secrets.
 
 ---
 
-# Phase 15 — Clean-room Reproduction
+# Phase 14 — Clean-room Reproduction
 
 **Status: DONE**
 
@@ -689,11 +656,69 @@ clean-room requirement for `REPRODUCED`.
 
 ---
 
+# Phase 15 — Security Hardening
+
+**Status: DONE**
+
+## Goal
+
+Treat repository code as potentially hostile.
+
+## Build
+
+* no host execution, secret mounts, Docker socket, or privileged containers,
+* capability dropping, no-new-privileges, resource and workspace limits,
+* network-denied default with explicit plan opt-in,
+* SSRF and redirect revalidation,
+* sterile noninteractive Git intake with no recursive submodules/LFS smudge,
+* unsafe-command handling and deterministic `UNSAFE` evidence.
+
+## Acceptance Criteria
+
+Safety tests demonstrate that prohibited host access and dangerous operations
+are rejected or isolated, including network denial, workspace bounds,
+URL/redirect policy, Git hardening, credential exclusion, and process limits.
+
+---
+
+# Phase 16 — Observability
+
+**Status: DONE**
+
+## Goal
+
+Integrate useful run metrics into the existing append-only state/events without
+introducing a second logging architecture.
+
+## Build
+
+* run and stage durations,
+* attempts, repairs, LLM calls, token usage, failure categories,
+* verification level, final status, Docker identity, and network mode,
+* stable queryable run timeline.
+
+## Acceptance Criteria
+
+Observability metrics are derived from real persisted events and bounded facts,
+remain secret-free, and have fixture coverage for normal and failed runs.
+
+---
+
+# Phase 17 — Evaluation Set
+
+**Status: NOT STARTED**
+
+Phase 17 is the next implementation phase.
+
+---
+
 # Current Next Action
 
-Phase 15 acceptance criteria have passed.
+Phase 16 acceptance criteria have passed; Phase 17 is not started.
 
 ```text
+Phase 14 → DONE
 Phase 15 → DONE
-Phase 16 → NOT STARTED
+Phase 16 → DONE
+Phase 17 → NOT STARTED
 ```

@@ -307,6 +307,7 @@ class PlanExecutionEngine:
             },
         )
         self.store.record_attempt(run_id, attempt)
+        network_mode = getattr(getattr(sandbox, "config", None), "network", None)
         tool_call = ToolCall.create(
             "docker_execute",
             {
@@ -314,6 +315,7 @@ class PlanExecutionEngine:
                 "step_id": step.step_id,
                 "timeout_seconds": timeout_seconds,
                 "working_directory": step.working_directory,
+                "network_mode": network_mode,
             },
         )
         self.store.record_tool_call(run_id, tool_call)
@@ -391,6 +393,7 @@ class PlanExecutionEngine:
                 "stderr": result.stderr,
                 "stdout": result.stdout,
                 "timed_out": result.timed_out,
+                "network_mode": network_mode,
             },
         )
         self.store.record_tool_result(run_id, tool_result)
