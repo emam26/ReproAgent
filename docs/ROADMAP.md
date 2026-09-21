@@ -19,7 +19,7 @@ BLOCKED
 
 # Current Phase
 
-## Phase 11 — Safety Hardening
+## Phase 12 — Objective Verification Engine
 
 **Status: DONE**
 
@@ -591,71 +591,28 @@ Safety tests demonstrate that prohibited host access and dangerous operations ar
 
 ---
 
-# Phase 12 — Evaluation Benchmark
+# Phase 12 — Objective Verification Engine
 
-**Status: NOT STARTED**
+**Status: DONE**
 
 ## Goal
 
-Prove ReproAgent works beyond hand-picked demos.
+Evaluate a finite verification contract using objective execution, environment,
+output, and artifact evidence.
 
-## Dataset
+## Build
 
-Start with approximately:
-
-```text
-20 repositories
-```
-
-Later:
-
-```text
-50+
-```
-
-Include:
-
-* healthy projects,
-* old dependency projects,
-* missing dependencies,
-* incorrect README instructions,
-* missing assets,
-* runtime incompatibilities.
-
-## Metrics
-
-Track:
-
-```text
-intake success
-analysis success
-environment setup success
-execution success
-test success
-full reproduction
-partial reproduction
-blocked
-failed
-repair success
-human intervention
-LLM calls
-agent steps
-runtime
-```
-
-## Later Comparisons
-
-Potential experiments:
-
-```text
-LLM A vs LLM B
-agent vs README-only baseline
-repair loop vs no repair loop
-```
+* strict verification level, check, evidence, and result models,
+* deterministic installation, command, test, output, environment, and artifact checks,
+* file type, size, and SHA-256 checks with workspace containment,
+* explicit execution-failed, verification-failed, unavailable, and unspecified outcomes,
+* no target command execution or LLM-derived proof.
 
 ## Acceptance Criteria
 
-A reproducible evaluation command generates aggregate benchmark metrics.
+Fixture tests prove objective pass, execution failure, failed verification,
+unavailable evidence, unspecified contracts, level handling, path containment,
+file facts, and secret-safe bounded evidence.
 
 ---
 
@@ -766,9 +723,9 @@ Do not work on this until repository-level reproduction is reliable.
 
 # Current Next Action
 
-Phase 11 acceptance criteria have passed.
+Phase 12 acceptance criteria have passed.
 
 ```text
-Phase 11 → DONE
-Phase 12 → NOT STARTED
+Phase 12 → DONE
+Phase 13 → NOT STARTED
 ```

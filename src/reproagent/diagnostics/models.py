@@ -214,6 +214,7 @@ class RepositoryAssets(DiagnosticModel):
 
 
 class VerificationTargetType(StrEnum):
+    ENVIRONMENT_SETUP = "ENVIRONMENT_SETUP"
     INSTALLATION_SUCCEEDS = "INSTALLATION_SUCCEEDS"
     COMMAND_EXITS_SUCCESSFULLY = "COMMAND_EXITS_SUCCESSFULLY"
     TESTS_EXECUTE = "TESTS_EXECUTE"
@@ -229,6 +230,9 @@ class VerificationTarget(DiagnosticModel):
     description: str = Field(min_length=1, max_length=1_000)
     command: str | None = Field(default=None, max_length=2_000)
     artifact_path: str | None = Field(default=None, max_length=1_000)
+    artifact_type: str | None = Field(default=None, max_length=20)
+    artifact_size_bytes: int | None = Field(default=None, ge=0)
+    artifact_sha256: str | None = Field(default=None, pattern=r"^[a-f0-9]{64}$")
     output_pattern: str | None = Field(default=None, max_length=1_000)
     required: bool = True
 
@@ -240,6 +244,23 @@ class VerificationTarget(DiagnosticModel):
         ):
             raise ValueError("Artifact verification requires artifact_path.")
         if (
+            self.target_type is VerificationTargetType.ENVIRONMENT_SETUP
+            and self.command is not None
+        ):
+            raise ValueError("Environment verification does not execute a command.")
+        if self.artifact_type is not None and self.artifact_path is None:
+            raise ValueError("Artifact type verification requires artifact_path.")
+        if self.artifact_size_bytes is not None and self.artifact_path is None:
+            raise ValueError("Artifact size verification requires artifact_path.")
+        if self.artifact_sha256 is not None and self.artifact_path is None:
+            raise ValueError("Artifact hash verification requires artifact_path.")
+        if self.artifact_type is not None and self.artifact_type not in {
+            "file",
+            "directory",
+            "symlink",
+        }:
+            raise ValueError("Artifact type must be file, directory, or symlink.")
+        if (
             self.target_type is VerificationTargetType.OUTPUT_CONDITION
             and self.output_pattern is None
         ):
@@ -249,6 +270,7 @@ class VerificationTarget(DiagnosticModel):
             in {
                 VerificationTargetType.COMMAND_EXITS_SUCCESSFULLY,
                 VerificationTargetType.TESTS_EXECUTE,
+                VerificationTargetType.OUTPUT_CONDITION,
             }
             and self.command is None
         ):

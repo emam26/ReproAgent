@@ -137,3 +137,12 @@ resource and workspace bounds, SSRF-safe public URL handling, redirect and
 download limits, sterile noninteractive Git configuration, disabled recursive
 submodules/LFS smudge, and malicious-fixture coverage. See
 [`docs/SECURITY.md`](docs/SECURITY.md).
+
+## Objective verification
+
+Phase 12 evaluates recorded execution evidence and bounded workspace facts with
+deterministic installation, command, test, expected-output, environment, and
+artifact checks. It reports explicit verification levels and distinguishes
+execution failure, failed conditions, unavailable evidence, and unspecified
+contracts. It never executes a target command for verification and never treats
+LLM output as proof. See [`docs/VERIFICATION.md`](docs/VERIFICATION.md).
