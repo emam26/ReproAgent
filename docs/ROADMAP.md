@@ -754,15 +754,39 @@ contracts.
 
 # Phase 19 — Baselines + Ablations
 
+**Status: DONE**
+
+## Goal
+
+Predeclare fair controls and paired capability removals before interpreting
+system-evaluation results.
+
+## Build
+
+* documented-only, deterministic-only, and bounded-agent baselines,
+* no-LLM, no-repair, and no-clean-room ablations,
+* same-case/order comparison validation,
+* descriptive metric deltas and case-level status changes without causal claims.
+
+## Acceptance Criteria
+
+The protocol is typed and predeclared, ablations name one removed capability,
+comparisons reject mismatched evaluation sets or order, and no significance or
+generalization claim is fabricated.
+
+---
+
+# Phase 20 — CLI Polish
+
 **Status: NOT STARTED**
 
-Phase 19 is the next implementation phase.
+Phase 20 is the next implementation phase.
 
 ---
 
 # Current Next Action
 
-Phase 18 acceptance criteria have passed; Phase 19 is not started.
+Phase 19 acceptance criteria have passed; Phase 20 is not started.
 
 ```text
 Phase 14 → DONE
@@ -770,5 +794,6 @@ Phase 15 → DONE
 Phase 16 → DONE
 Phase 17 → DONE
 Phase 18 → DONE
-Phase 19 → NOT STARTED
+Phase 19 → DONE
+Phase 20 → NOT STARTED
 ```

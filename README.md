@@ -194,3 +194,11 @@ contracts and reports status/verification accuracy, confusion matrices, failure
 strata, repair and intervention rates, stage success, runtime, agent steps, and
 LLM calls. It does not execute repositories or infer success from LLM prose. See
 [`docs/SYSTEM_EVALUATION.md`](docs/SYSTEM_EVALUATION.md).
+
+## Baselines and ablations
+
+Phase 19 predeclares documented-only, deterministic-only, and bounded-agent
+baselines, plus paired no-LLM, no-repair, and no-clean-room ablations. Comparison
+results are descriptive and paired by case; the system does not claim causal or
+statistical conclusions from one controlled evaluation set. See
+[`docs/BASELINES_ABLATIONS.md`](docs/BASELINES_ABLATIONS.md).

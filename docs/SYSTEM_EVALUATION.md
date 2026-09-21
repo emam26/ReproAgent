@@ -19,3 +19,9 @@ Missing, duplicate, or foreign observations are errors. Case order is stable,
 and all aggregation is deterministic. The evaluator does not treat an LLM
 summary as evidence; the adapter must provide machine-observed status and
 verification facts produced by ReproAgent’s existing verifier and state.
+
+Phase 19 adds a predeclared protocol with documented-only, deterministic-only,
+and bounded-agent baselines plus paired no-LLM, no-repair, and no-clean-room
+ablations. Comparisons report descriptive metric deltas and per-case status
+changes only; they do not claim causal effects or statistical significance from
+one finite controlled set.
