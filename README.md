@@ -161,3 +161,11 @@ separating official documented reproduction from agent-assisted attempts. When
 real data exists it also writes events, commands, environment, exact patches,
 and a validated reproduction recipe without fabricating empty artifacts or
 secrets. See [`docs/REPORTING.md`](docs/REPORTING.md).
+
+## Clean-room reproduction
+
+Phase 15 derives a final recipe, copies the source into a new bounded workspace,
+reapplies only the real patch, creates a new Docker sandbox, verifies the run,
+and requires clean-room evidence before `REPRODUCED`. It emits portable recipe
+artifacts when their inputs are real and does not fabricate environment locks or
+Dockerfiles. See [`docs/CLEAN_ROOM.md`](docs/CLEAN_ROOM.md).

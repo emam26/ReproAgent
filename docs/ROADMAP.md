@@ -19,7 +19,7 @@ BLOCKED
 
 # Current Phase
 
-## Phase 14 — Reporting + Run Artifacts
+## Phase 15 — Clean-room Reproduction
 
 **Status: DONE**
 
@@ -663,43 +663,37 @@ gaps without fabricating facts or persisting secrets.
 
 ---
 
-# Future Phase — Research Paper Reproduction
+# Phase 15 — Clean-room Reproduction
 
-**Status: OUT OF V1 SCOPE**
+**Status: DONE**
 
-Input:
+## Goal
 
-```text
-paper
-+
-repository
-```
+Require successful repaired workflows to reproduce from a completely fresh
+workspace and Docker sandbox.
 
-Additional workflow:
+## Build
 
-```text
-extract reported experiment
-↓
-identify matching configuration/code
-↓
-run experiment
-↓
-compare reproduced metric
-↓
-analyze discrepancy
-↓
-generate claim-level report
-```
+* bounded derived clean-room recipes,
+* fresh workspace copy with symlink/file/byte limits,
+* fresh state/run artifacts and Docker sandbox,
+* reapplication of real patches only,
+* clean-room verification and status evidence,
+* portable recipe artifacts when evidence permits.
 
-Do not work on this until repository-level reproduction is reliable.
+## Acceptance Criteria
+
+Clean-room success and failure fixtures prove that prior workspace/container
+state is not reused and that only a verified clean rerun can satisfy the
+clean-room requirement for `REPRODUCED`.
 
 ---
 
 # Current Next Action
 
-Phase 14 acceptance criteria have passed.
+Phase 15 acceptance criteria have passed.
 
 ```text
-Phase 14 → DONE
-Phase 15 → NOT STARTED
+Phase 15 → DONE
+Phase 16 → NOT STARTED
 ```
