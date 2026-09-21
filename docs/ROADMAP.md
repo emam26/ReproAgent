@@ -19,7 +19,7 @@ BLOCKED
 
 # Current Phase
 
-## Phase 7.5 — Diagnostic & Verification Foundation
+## Phase 8 — Autonomous Diagnosis
 
 **Status: DONE**
 
@@ -484,7 +484,7 @@ verification contracts have deterministic fixture coverage.
 
 # Phase 8 — Autonomous Diagnosis
 
-**Status: NOT STARTED**
+**Status: DONE**
 
 ## Goal
 
@@ -768,12 +768,11 @@ Do not work on this until repository-level reproduction is reliable.
 
 # Current Next Action
 
-Phase 7.5 acceptance criteria have passed.
+Phase 8 acceptance criteria have passed.
 
 ```text
-Phase 7.5 → DONE
-Phase 8   → NOT STARTED
+Phase 8 → DONE
+Phase 9 → NOT STARTED
 ```
 
-Next: implement bounded autonomous diagnosis. Do not begin Phase 9 until Phase 8
-is tested, documented, committed, and pushed.
+Stop after Phase 8 for this task. Do not begin Phase 9 automatically.

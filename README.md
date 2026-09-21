@@ -102,3 +102,11 @@ PEP-aware dependency intelligence, Docker-only pip/environment inspection,
 import analysis, repeated-failure signatures, asset indicators, and typed
 verification contracts. No autonomous diagnosis or repair occurs in this
 layer. See [`docs/DIAGNOSTICS.md`](docs/DIAGNOSTICS.md).
+
+## Bounded autonomous diagnosis
+
+Phase 8 adds deterministic-first diagnosis over compact evidence, strict typed
+hypotheses and future repair actions, bounded provider calls, repetition limits,
+policy checks, prompt-injection separation, and append-only diagnosis events.
+Diagnosis never executes commands or edits repositories. See
+[`docs/DIAGNOSIS.md`](docs/DIAGNOSIS.md).
