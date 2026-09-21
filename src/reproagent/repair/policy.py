@@ -38,7 +38,11 @@ def _relative_path(value: object, field: str) -> str:
     if not isinstance(value, str) or not value or not _SAFE_PATH.fullmatch(value):
         raise RepairPolicyError(f"{field} must be a non-empty safe path.")
     normalized = value.replace("\\", "/")
-    if normalized.startswith("/") or re.match(r"^[A-Za-z]:", normalized) or ".." in normalized.split("/"):
+    if (
+        normalized.startswith("/")
+        or re.match(r"^[A-Za-z]:", normalized)
+        or ".." in normalized.split("/")
+    ):
         raise RepairPolicyError(f"{field} must remain inside the workspace.")
     return normalized
 
@@ -51,7 +55,9 @@ def _require_requirement(value: object, *, field: str) -> str:
     except InvalidRequirement as exc:
         raise RepairPolicyError(f"{field} is not a valid PEP 508 requirement.") from exc
     if requirement.url is not None:
-        raise RepairPolicyError("Direct URL and VCS dependencies are not allowed in Phase 9.")
+        raise RepairPolicyError(
+            "Direct URL and VCS dependencies are not allowed in Phase 9."
+        )
     return str(requirement)
 
 
@@ -78,14 +84,18 @@ def validate_repair_action(
     known = {item.reference for item in context.evidence}
     unknown = sorted(set(action.supporting_evidence) - known)
     if unknown:
-        raise RepairPolicyError(f"Repair references unavailable evidence: {', '.join(unknown)}.")
+        raise RepairPolicyError(
+            f"Repair references unavailable evidence: {', '.join(unknown)}."
+        )
     if action.risk is RepairRisk.HIGH or (
         action.risk is RepairRisk.MEDIUM and limits.max_risk is RepairRisk.LOW
     ):
         raise RepairPolicyError("Repair risk exceeds the configured policy.")
     for key in action.arguments:
         if key.lower() in _FORBIDDEN_KEYS:
-            raise RepairPolicyError("Repair arguments contain an unrestricted execution field.")
+            raise RepairPolicyError(
+                "Repair arguments contain an unrestricted execution field."
+            )
         if _SENSITIVE_VARIABLE.search(key):
             raise RepairPolicyError("Repair arguments contain sensitive material.")
     arguments = action.arguments
@@ -118,10 +128,22 @@ def validate_repair_action(
     elif action.action_type is RepairActionType.SET_SAFE_ENVIRONMENT_VARIABLE:
         name = arguments.get("name")
         value = arguments.get("value")
-        if not isinstance(name, str) or not _SAFE_VARIABLE.fullmatch(name) or _SENSITIVE_VARIABLE.search(name):
-            raise RepairPolicyError("Only non-sensitive safe environment names are allowed.")
-        if not isinstance(value, str) or len(value) > 1_000 or any(char in value for char in "\r\n\x00"):
-            raise RepairPolicyError("Environment value is invalid or exceeds its bound.")
+        if (
+            not isinstance(name, str)
+            or not _SAFE_VARIABLE.fullmatch(name)
+            or _SENSITIVE_VARIABLE.search(name)
+        ):
+            raise RepairPolicyError(
+                "Only non-sensitive safe environment names are allowed."
+            )
+        if (
+            not isinstance(value, str)
+            or len(value) > 1_000
+            or any(char in value for char in "\r\n\x00")
+        ):
+            raise RepairPolicyError(
+                "Environment value is invalid or exceeds its bound."
+            )
     elif action.action_type is RepairActionType.CREATE_REQUIRED_DIRECTORY:
         _relative_path(arguments.get("path"), "directory path")
     elif action.action_type is RepairActionType.ADJUST_CONFIG_PATH:

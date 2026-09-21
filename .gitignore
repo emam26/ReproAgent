@@ -16,6 +16,8 @@ node_modules/
 frontend/dist/
 frontend/.vite/
 frontend/coverage/
+dist/
+build/
 
 runs/*
 !runs/.gitkeep

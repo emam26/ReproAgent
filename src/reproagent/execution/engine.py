@@ -206,7 +206,9 @@ class PlanExecutionEngine:
         else:
             self.store.transition(run_id, Stage.VERIFY)
             self.store.transition(run_id, Stage.REPORT)
-            outcome = RunOutcome.SUCCEEDED if failure_kind is None else RunOutcome.FAILED
+            outcome = (
+                RunOutcome.SUCCEEDED if failure_kind is None else RunOutcome.FAILED
+            )
             self.store.finish(run_id, outcome)
         artifacts.write_events(self.store.list_events(run_id))
         finished_at = datetime.now(UTC)

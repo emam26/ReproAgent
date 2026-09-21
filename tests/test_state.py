@@ -237,7 +237,8 @@ def test_event_sequences_are_monotonic_and_retrieval_is_ordered(tmp_path: Path) 
         store.append_event(run.run_id, EventType.ATTEMPT_RECORDED, {"index": 3})
         events = store.list_events(run.run_id)
         index_names = {
-            row["name"] for row in store._connection.execute("PRAGMA index_list(events)")
+            row["name"]
+            for row in store._connection.execute("PRAGMA index_list(events)")
         }
 
     assert [event.sequence for event in events] == [1, 2, 3]
@@ -474,8 +475,5 @@ def test_file_backed_mock_run_survives_restart(tmp_path: Path) -> None:
     ]
     assert after_restart[6].payload["attempt"]["attempt_id"] == attempt.attempt_id
     assert after_restart[7].payload["tool_call"]["call_id"] == tool_call.call_id
-    assert (
-        after_restart[8].payload["tool_result"]["result_id"]
-        == tool_result.result_id
-    )
+    assert after_restart[8].payload["tool_result"]["result_id"] == tool_result.result_id
     assert after_restart[-1].payload == {"outcome": RunOutcome.SUCCEEDED.value}

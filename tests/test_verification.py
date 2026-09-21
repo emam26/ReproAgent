@@ -51,7 +51,9 @@ def _step(
     )
 
 
-def _execution(steps: list[StepExecutionResult], *, succeeded: bool = True) -> ExecutionRunResult:
+def _execution(
+    steps: list[StepExecutionResult], *, succeeded: bool = True
+) -> ExecutionRunResult:
     now = datetime.now(UTC)
     return ExecutionRunResult(
         run_id="verify-run",
@@ -89,7 +91,9 @@ def _environment() -> EnvironmentFingerprint:
     )
 
 
-def test_verifier_passes_environment_command_test_and_file_facts(tmp_path: Path) -> None:
+def test_verifier_passes_environment_command_test_and_file_facts(
+    tmp_path: Path,
+) -> None:
     artifact = tmp_path / "result.txt"
     artifact.write_text("verified\n", encoding="utf-8")
     digest = hashlib.sha256(artifact.read_bytes()).hexdigest()
@@ -151,7 +155,9 @@ def test_verifier_passes_environment_command_test_and_file_facts(tmp_path: Path)
 
     assert result.status is VerificationResultStatus.PASSED
     assert result.level is VerificationLevel.L3
-    assert all(check.status is VerificationCheckStatus.PASSED for check in result.checks)
+    assert all(
+        check.status is VerificationCheckStatus.PASSED for check in result.checks
+    )
 
 
 def test_verifier_distinguishes_execution_failure_from_verification_failure(

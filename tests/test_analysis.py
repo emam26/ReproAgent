@@ -76,9 +76,7 @@ def test_requirements_project_is_analyzed_deterministically(tmp_path: Path) -> N
 
     assert analysis.project_type == "python"
     assert analysis.package_manager == "pip"
-    assert analysis.install_commands == [
-        "python -m pip install -r requirements.txt"
-    ]
+    assert analysis.install_commands == ["python -m pip install -r requirements.txt"]
     assert analysis.test_commands == ["python -m pytest"]
     assert analysis.network_required is True
     assert all(

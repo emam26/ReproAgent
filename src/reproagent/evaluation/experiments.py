@@ -72,12 +72,12 @@ class EvaluationProtocol(DiagnosticModel):
         ablation_ids = [item.ablation_id for item in self.ablations]
         if len(set(ablation_ids)) != len(ablation_ids):
             raise ValueError("Ablation IDs must be unique.")
-        if any(
-            item.parent_baseline_id not in baseline_ids for item in self.ablations
-        ):
+        if any(item.parent_baseline_id not in baseline_ids for item in self.ablations):
             raise ValueError("Every ablation must name a declared parent baseline.")
         if not self.paired_by_case or not self.fixed_case_order:
-            raise ValueError("Baseline and ablation comparisons must be paired and ordered.")
+            raise ValueError(
+                "Baseline and ablation comparisons must be paired and ordered."
+            )
         return self
 
 

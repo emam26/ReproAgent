@@ -95,32 +95,50 @@ def test_status_rules_distinguish_reproduction_from_workflow_outcome() -> None:
 
 
 def test_status_rules_cover_blocked_failed_unsafe_and_clean_room_cases() -> None:
-    assert compute_reproduction_status(None, workflow_succeeded=False).status is ReproductionStatus.BLOCKED
-    assert compute_reproduction_status(
-        _verification(),
-        workflow_succeeded=True,
-        clean_room_required=True,
-    ).status is ReproductionStatus.PARTIAL
-    assert compute_reproduction_status(
-        _verification(),
-        workflow_succeeded=True,
-        clean_room_required=True,
-        clean_room_verified=False,
-    ).status is ReproductionStatus.PARTIAL
-    assert compute_reproduction_status(
-        _verification(),
-        workflow_succeeded=True,
-        clean_room_required=True,
-        clean_room_verified=True,
-    ).status is ReproductionStatus.REPRODUCED
+    assert (
+        compute_reproduction_status(None, workflow_succeeded=False).status
+        is ReproductionStatus.BLOCKED
+    )
+    assert (
+        compute_reproduction_status(
+            _verification(),
+            workflow_succeeded=True,
+            clean_room_required=True,
+        ).status
+        is ReproductionStatus.PARTIAL
+    )
+    assert (
+        compute_reproduction_status(
+            _verification(),
+            workflow_succeeded=True,
+            clean_room_required=True,
+            clean_room_verified=False,
+        ).status
+        is ReproductionStatus.PARTIAL
+    )
+    assert (
+        compute_reproduction_status(
+            _verification(),
+            workflow_succeeded=True,
+            clean_room_required=True,
+            clean_room_verified=True,
+        ).status
+        is ReproductionStatus.REPRODUCED
+    )
 
     unsafe = compute_reproduction_status(
         _verification(),
         workflow_succeeded=True,
-        unsafe_findings=["Docker socket access was requested.", "Host path escape was detected."],
+        unsafe_findings=[
+            "Docker socket access was requested.",
+            "Host path escape was detected.",
+        ],
     )
     assert unsafe.status is ReproductionStatus.UNSAFE
-    assert [reason.reason_id for reason in unsafe.reasons] == ["reason-001", "reason-002"]
+    assert [reason.reason_id for reason in unsafe.reasons] == [
+        "reason-001",
+        "reason-002",
+    ]
 
 
 def test_status_result_can_report_verification_failure_and_unavailability() -> None:

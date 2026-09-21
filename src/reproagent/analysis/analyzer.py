@@ -114,7 +114,9 @@ _ENV_ASSIGNMENT = re.compile(
     r"\b(?:export|set|setx)\s+(?P<name>[A-Z][A-Z0-9_]{2,})\s*=",
     re.IGNORECASE,
 )
-_ENV_REFERENCE = re.compile(r"\$\{(?P<braced>[A-Z][A-Z0-9_]{2,})\}|\$(?P<plain>[A-Z][A-Z0-9_]{2,})")
+_ENV_REFERENCE = re.compile(
+    r"\$\{(?P<braced>[A-Z][A-Z0-9_]{2,})\}|\$(?P<plain>[A-Z][A-Z0-9_]{2,})"
+)
 _URL = re.compile(r"https?://[^\s)>'\"]+", re.IGNORECASE)
 _ASSET_HINT = re.compile(
     r"(?:checkpoint|weights?|model|dataset|\.ckpt\b|\.pth\b|\.pt\b|\.bin\b)",
@@ -229,7 +231,9 @@ def _analyze_requirements(
     builder: _AnalysisBuilder,
     document: ContextDocument,
 ) -> None:
-    builder.project_type = "python" if builder.project_type == "unknown" else builder.project_type
+    builder.project_type = (
+        "python" if builder.project_type == "unknown" else builder.project_type
+    )
     builder.package_manager = builder.package_manager or "pip"
     _append_unique(builder.dependency_sources, document.path)
     command = f"python -m pip install -r {document.path}"
@@ -241,7 +245,11 @@ def _analyze_requirements(
         EvidenceProvenance.DETERMINISTICALLY_DETECTED,
         document.path,
     )
-    if re.search(r"^(?:torch|tensorflow|jax)(?:[<>=~!]|$)", document.text, re.MULTILINE | re.IGNORECASE):
+    if re.search(
+        r"^(?:torch|tensorflow|jax)(?:[<>=~!]|$)",
+        document.text,
+        re.MULTILINE | re.IGNORECASE,
+    ):
         builder.project_type = "machine_learning"
 
 
@@ -250,7 +258,9 @@ def _analyze_environment(
     document: ContextDocument,
 ) -> None:
     builder.package_manager = "conda"
-    builder.project_type = "python" if builder.project_type == "unknown" else builder.project_type
+    builder.project_type = (
+        "python" if builder.project_type == "unknown" else builder.project_type
+    )
     _append_unique(builder.dependency_sources, document.path)
     command = f"conda env create -f {document.path}"
     _append_unique(builder.install_commands, command)
@@ -275,7 +285,9 @@ def _analyze_setup_metadata(
     builder: _AnalysisBuilder,
     document: ContextDocument,
 ) -> None:
-    builder.project_type = "python" if builder.project_type == "unknown" else builder.project_type
+    builder.project_type = (
+        "python" if builder.project_type == "unknown" else builder.project_type
+    )
     builder.package_manager = builder.package_manager or "pip"
     _append_unique(builder.dependency_sources, document.path)
     _append_unique(builder.install_commands, "python -m pip install .")
@@ -318,7 +330,9 @@ def _analyze_dockerfile(
     builder: _AnalysisBuilder,
     document: ContextDocument,
 ) -> None:
-    for match in re.finditer(r"^\s*FROM\s+([^\s]+)", document.text, re.MULTILINE | re.IGNORECASE):
+    for match in re.finditer(
+        r"^\s*FROM\s+([^\s]+)", document.text, re.MULTILINE | re.IGNORECASE
+    ):
         image = match.group(1)
         builder.add_evidence(
             "container_base_image",
@@ -385,7 +399,9 @@ def _analyze_documentation(
         )
     for url_match in _URL.finditer(document.text):
         url = _safe_asset_url(url_match.group(0))
-        if _ASSET_HINT.search(url) or _ASSET_HINT.search(document.text[max(0, url_match.start() - 60) : url_match.end() + 60]):
+        if _ASSET_HINT.search(url) or _ASSET_HINT.search(
+            document.text[max(0, url_match.start() - 60) : url_match.end() + 60]
+        ):
             _append_unique(builder.external_assets, url)
             builder.network_required = True
             builder.add_evidence(
@@ -421,7 +437,9 @@ def _analyze_support_file(
         for target in ("test", "demo", "run"):
             if re.search(rf"^{target}\s*:", document.text, re.MULTILINE):
                 command = f"make {target}"
-                destination = builder.test_commands if target == "test" else builder.run_commands
+                destination = (
+                    builder.test_commands if target == "test" else builder.run_commands
+                )
                 _append_unique(destination, command)
                 builder.add_evidence(
                     "test_command" if target == "test" else "run_command",
@@ -480,9 +498,9 @@ def _detect_python_conflicts(builder: _AnalysisBuilder) -> None:
             continue
         for detected_hint in sorted(detected):
             minimum = re.match(r">=?\s*(\d+\.\d+)", detected_hint)
-            if minimum and tuple(map(int, documented_version.group().split("."))) < tuple(
-                map(int, minimum.group(1).split("."))
-            ):
+            if minimum and tuple(
+                map(int, documented_version.group().split("."))
+            ) < tuple(map(int, minimum.group(1).split("."))):
                 message = (
                     f"Documentation suggests Python {documented_hint}, while project "
                     f"metadata declares {detected_hint}."
@@ -570,9 +588,15 @@ def _apply_inference(
             None,
             summary,
         )
-    if not builder.has_deterministic_evidence("gpu_requirement") and inference.gpu_required is not None:
+    if (
+        not builder.has_deterministic_evidence("gpu_requirement")
+        and inference.gpu_required is not None
+    ):
         builder.gpu_required = inference.gpu_required
-    if not builder.has_deterministic_evidence("external_asset") and inference.network_required is not None:
+    if (
+        not builder.has_deterministic_evidence("external_asset")
+        and inference.network_required is not None
+    ):
         builder.network_required = inference.network_required
 
 
@@ -591,7 +615,9 @@ class RepositoryAnalyzer:
         documents = collect_context_documents(manifest, self.context_limits)
         builder = _deterministic_analysis(manifest, documents)
         confidence = 0.9 if builder.likely_execution_target else 0.65
-        needs_interpretation = bool(builder.conflicts) or builder.likely_execution_target is None
+        needs_interpretation = (
+            bool(builder.conflicts) or builder.likely_execution_target is None
+        )
         if provider is not None and needs_interpretation:
             preliminary = builder.build(
                 [document.path for document in documents],

@@ -115,8 +115,14 @@ def validate_public_url(
         raise PublicUrlError("Local and internal URL destinations are not allowed.")
     try:
         if _blocked_address(host):
-            raise PublicUrlError("Private and special-use URL destinations are not allowed.")
-        addresses = [host] if not resolve else (resolver or _default_resolver)(host, port or 443)
+            raise PublicUrlError(
+                "Private and special-use URL destinations are not allowed."
+            )
+        addresses = (
+            [host]
+            if not resolve
+            else (resolver or _default_resolver)(host, port or 443)
+        )
     except PublicUrlError:
         raise
     except (OSError, socket.gaierror) as exc:
@@ -124,7 +130,9 @@ def validate_public_url(
     if not addresses:
         raise PublicUrlError("URL hostname resolved to no addresses.")
     if any(_blocked_address(address) for address in addresses):
-        raise PublicUrlError("URL hostname resolves to a private or special-use address.")
+        raise PublicUrlError(
+            "URL hostname resolves to a private or special-use address."
+        )
     return urlunsplit(("https", host, parsed.path or "/", parsed.query, ""))
 
 
@@ -175,7 +183,9 @@ def download_public_url(
                 declared_length = int(content_length)
             except ValueError as exc:
                 response.close()
-                raise PublicUrlError("Public asset reported an invalid byte length.") from exc
+                raise PublicUrlError(
+                    "Public asset reported an invalid byte length."
+                ) from exc
             if declared_length > policy.max_bytes:
                 response.close()
                 raise PublicUrlError("Public asset exceeds the byte limit.")

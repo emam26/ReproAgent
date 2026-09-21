@@ -113,15 +113,29 @@ def _memory_store() -> tuple[SQLiteRunStore, str]:
 @pytest.mark.parametrize(
     ("action_type", "arguments"),
     [
-        (RepairActionType.CHANGE_INVOCATION, {"step_id": "step-003", "command": "python -m pytest"}),
+        (
+            RepairActionType.CHANGE_INVOCATION,
+            {"step_id": "step-003", "command": "python -m pytest"},
+        ),
         (RepairActionType.CHANGE_PYTHON_VERSION, {"python_version": "3.11"}),
         (RepairActionType.ADD_DEPENDENCY, {"requirement": "numpy>=1.26"}),
         (RepairActionType.CHANGE_DEPENDENCY_VERSION, {"requirement": "numpy==2.0"}),
-        (RepairActionType.SET_SAFE_ENVIRONMENT_VARIABLE, {"name": "PYTHONWARNINGS", "value": "default"}),
+        (
+            RepairActionType.SET_SAFE_ENVIRONMENT_VARIABLE,
+            {"name": "PYTHONWARNINGS", "value": "default"},
+        ),
         (RepairActionType.CREATE_REQUIRED_DIRECTORY, {"path": "outputs/cache"}),
         (RepairActionType.ADJUST_CONFIG_PATH, {"path": "configs/default.yaml"}),
-        (RepairActionType.FETCH_DOCUMENTED_ASSET, {"url": "https://example.org/model.bin", "max_bytes": 1024}),
-        (RepairActionType.APPLY_MINIMAL_PATCH, {"patch": "diff --git a/app.py b/app.py\n@@\n-print('old')\n+print('new')\n"}),
+        (
+            RepairActionType.FETCH_DOCUMENTED_ASSET,
+            {"url": "https://example.org/model.bin", "max_bytes": 1024},
+        ),
+        (
+            RepairActionType.APPLY_MINIMAL_PATCH,
+            {
+                "patch": "diff --git a/app.py b/app.py\n@@\n-print('old')\n+print('new')\n"
+            },
+        ),
         (RepairActionType.GATHER_MORE_EVIDENCE, {}),
         (RepairActionType.STOP_UNREPAIRABLE, {}),
     ],
@@ -130,7 +144,11 @@ def test_each_repair_action_family_is_policy_checked(
     action_type: RepairActionType,
     arguments: dict[str, object],
 ) -> None:
-    asset_url = "https://example.org/model.bin" if action_type is RepairActionType.FETCH_DOCUMENTED_ASSET else None
+    asset_url = (
+        "https://example.org/model.bin"
+        if action_type is RepairActionType.FETCH_DOCUMENTED_ASSET
+        else None
+    )
     context = _context(asset_url=asset_url)
     action = _action(
         action_type,
@@ -219,7 +237,11 @@ def test_plan_backend_changes_invocation_and_dependency_without_execution() -> N
     with pytest.raises(RepairNotExecutableError):
         applier.apply(
             plan,
-            _action(RepairActionType.APPLY_MINIMAL_PATCH, {"patch": "diff --git a/a b/a"}, reversibility=Reversibility.ROLLBACK_REQUIRED),
+            _action(
+                RepairActionType.APPLY_MINIMAL_PATCH,
+                {"patch": "diff --git a/a b/a"},
+                reversibility=Reversibility.ROLLBACK_REQUIRED,
+            ),
         )
 
 
@@ -228,13 +250,19 @@ def test_engine_records_objective_improvement_and_audit_events() -> None:
     context = _context()
     application = PlanRepairApplier().apply(
         _plan(),
-        _action(RepairActionType.CHANGE_INVOCATION, {"step_id": "step-003", "command": "python -m pytest"}),
+        _action(
+            RepairActionType.CHANGE_INVOCATION,
+            {"step_id": "step-003", "command": "python -m pytest"},
+        ),
     )
     engine = RepairExperimentEngine(store, _StaticBackend(application))
     after_signature = "a" * 64
 
     result = engine.run(
-        _action(RepairActionType.CHANGE_INVOCATION, {"step_id": "step-003", "command": "python -m pytest"}),
+        _action(
+            RepairActionType.CHANGE_INVOCATION,
+            {"step_id": "step-003", "command": "python -m pytest"},
+        ),
         context,
         before_failure_signature=context.failure_signature,
         observe=lambda _: RepairObservation(
@@ -262,7 +290,10 @@ def test_engine_records_objective_improvement_and_audit_events() -> None:
 def test_engine_blocks_repeated_failure_and_records_stop() -> None:
     store, run_id = _memory_store()
     context = _context()
-    action = _action(RepairActionType.CHANGE_INVOCATION, {"step_id": "step-003", "command": "python -m pytest"})
+    action = _action(
+        RepairActionType.CHANGE_INVOCATION,
+        {"step_id": "step-003", "command": "python -m pytest"},
+    )
     application = PlanRepairApplier().apply(_plan(), action)
     engine = RepairExperimentEngine(store, _StaticBackend(application))
     observation = lambda _: RepairObservation(
@@ -273,8 +304,20 @@ def test_engine_blocks_repeated_failure_and_records_stop() -> None:
         summary="The same failure remains.",
     )
 
-    first = engine.run(action, context, before_failure_signature=context.failure_signature, observe=observation, run_id=run_id)
-    second = engine.run(action, context, before_failure_signature=context.failure_signature, observe=observation, run_id=run_id)
+    first = engine.run(
+        action,
+        context,
+        before_failure_signature=context.failure_signature,
+        observe=observation,
+        run_id=run_id,
+    )
+    second = engine.run(
+        action,
+        context,
+        before_failure_signature=context.failure_signature,
+        observe=observation,
+        run_id=run_id,
+    )
 
     assert first.status is RepairExperimentStatus.UNCHANGED
     assert second.status is RepairExperimentStatus.STOPPED
@@ -344,7 +387,10 @@ def test_engine_rejects_high_risk_and_observation_failure_still_rolls_back() -> 
 
     application = _RecordingApplication(_plan(), _plan())
     engine = RepairExperimentEngine(store, _StaticBackend(application))
-    action = _action(RepairActionType.CHANGE_INVOCATION, {"step_id": "step-003", "command": "python -m pytest"})
+    action = _action(
+        RepairActionType.CHANGE_INVOCATION,
+        {"step_id": "step-003", "command": "python -m pytest"},
+    )
     with pytest.raises(RuntimeError, match="observer"):
         engine.run(
             action,

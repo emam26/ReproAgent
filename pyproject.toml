@@ -8,6 +8,14 @@ version = "0.1.0"
 description = "A reproducibility auditor for open-source software."
 readme = "README.md"
 requires-python = ">=3.11"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Testing",
+]
 dependencies = [
     "packaging>=24.0",
     "pydantic>=2.0",
@@ -20,6 +28,7 @@ api = [
     "uvicorn>=0.30",
 ]
 dev = [
+    "build>=1.2",
     "fastapi>=0.115",
     "httpx>=0.27",
     "pytest>=8.0",
@@ -29,11 +38,15 @@ dev = [
 [project.scripts]
 reproagent = "reproagent.cli:app"
 
+[project.urls]
+Repository = "https://github.com/emam26/ReproAgent"
+Issues = "https://github.com/emam26/ReproAgent/issues"
+
 [tool.setuptools.packages.find]
 where = ["src"]
 
 [tool.setuptools.package-data]
-reproagent.evaluation = ["evaluation_set.json"]
+"reproagent.evaluation" = ["evaluation_set.json"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

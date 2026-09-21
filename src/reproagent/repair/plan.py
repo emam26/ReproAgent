@@ -27,7 +27,10 @@ class AppliedPlanRepair:
 
 
 def _renumber(steps: list[PlanStep]) -> list[PlanStep]:
-    return [step.model_copy(update={"step_id": f"step-{index:03d}"}) for index, step in enumerate(steps, 1)]
+    return [
+        step.model_copy(update={"step_id": f"step-{index:03d}"})
+        for index, step in enumerate(steps, 1)
+    ]
 
 
 class PlanRepairApplier:
@@ -63,14 +66,18 @@ class PlanRepairApplier:
                 steps.append(step)
         if not changed:
             raise RepairPolicyError(f"Unknown plan step: {step_id}.")
-        return AppliedPlanRepair(before=plan, after=plan.model_copy(update={"steps": steps}))
+        return AppliedPlanRepair(
+            before=plan, after=plan.model_copy(update={"steps": steps})
+        )
 
     def _change_dependency(
         self,
         plan: ReproductionPlan,
         action: RepairAction,
     ) -> AppliedPlanRepair:
-        requirement = _require_requirement(action.arguments.get("requirement"), field="requirement")
+        requirement = _require_requirement(
+            action.arguments.get("requirement"), field="requirement"
+        )
         requested_step = action.arguments.get("step_id")
         target_index = next(
             (
@@ -82,7 +89,9 @@ class PlanRepairApplier:
             None,
         )
         if target_index is None:
-            raise RepairNotExecutableError("No dependency-installation step is available.")
+            raise RepairNotExecutableError(
+                "No dependency-installation step is available."
+            )
         target = plan.steps[target_index]
         command = target.command or "python -m pip install ."
         if action.action_type is RepairActionType.CHANGE_DEPENDENCY_VERSION:
@@ -95,4 +104,6 @@ class PlanRepairApplier:
             raise RepairPolicyError(str(exc)) from exc
         steps = list(plan.steps)
         steps[target_index] = target.model_copy(update={"command": command})
-        return AppliedPlanRepair(before=plan, after=plan.model_copy(update={"steps": steps}))
+        return AppliedPlanRepair(
+            before=plan, after=plan.model_copy(update={"steps": steps})
+        )

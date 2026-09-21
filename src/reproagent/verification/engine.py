@@ -75,7 +75,9 @@ class ObjectiveVerificationEngine:
             for check in required
         ):
             status = VerificationResultStatus.EXECUTION_FAILED
-        elif any(check.status is VerificationCheckStatus.UNAVAILABLE for check in required):
+        elif any(
+            check.status is VerificationCheckStatus.UNAVAILABLE for check in required
+        ):
             status = VerificationResultStatus.UNAVAILABLE
         elif any(check.status is VerificationCheckStatus.FAILED for check in required):
             status = VerificationResultStatus.FAILED
@@ -225,11 +227,17 @@ class ObjectiveVerificationEngine:
                 str(target.artifact_path),
             )
         if target.artifact_type == "file" and not path.is_file():
-            return self._artifact_failed(check_id, target, level, "Artifact is not a file.")
+            return self._artifact_failed(
+                check_id, target, level, "Artifact is not a file."
+            )
         if target.artifact_type == "directory" and not path.is_dir():
-            return self._artifact_failed(check_id, target, level, "Artifact is not a directory.")
+            return self._artifact_failed(
+                check_id, target, level, "Artifact is not a directory."
+            )
         if target.artifact_type == "symlink" and not path.is_symlink():
-            return self._artifact_failed(check_id, target, level, "Artifact is not a symlink.")
+            return self._artifact_failed(
+                check_id, target, level, "Artifact is not a symlink."
+            )
         try:
             size = path.stat().st_size
         except OSError as exc:
@@ -241,10 +249,19 @@ class ObjectiveVerificationEngine:
                 "Artifact metadata could not be read.",
                 str(exc),
             )
-        if target.artifact_size_bytes is not None and size != target.artifact_size_bytes:
-            return self._artifact_failed(check_id, target, level, "Artifact size differs.")
+        if (
+            target.artifact_size_bytes is not None
+            and size != target.artifact_size_bytes
+        ):
+            return self._artifact_failed(
+                check_id, target, level, "Artifact size differs."
+            )
         if target.artifact_sha256 is not None:
-            if not path.is_file() or path.is_symlink() or size > self.limits.max_hash_bytes:
+            if (
+                not path.is_file()
+                or path.is_symlink()
+                or size > self.limits.max_hash_bytes
+            ):
                 return self._artifact_failed(
                     check_id,
                     target,
@@ -253,7 +270,9 @@ class ObjectiveVerificationEngine:
                 )
             digest = hashlib.sha256(path.read_bytes()).hexdigest()
             if digest != target.artifact_sha256:
-                return self._artifact_failed(check_id, target, level, "Artifact hash differs.")
+                return self._artifact_failed(
+                    check_id, target, level, "Artifact hash differs."
+                )
         return self._check(
             check_id,
             target,
@@ -300,7 +319,9 @@ class ObjectiveVerificationEngine:
                 VerificationEvidence(
                     evidence_id="evidence-001",
                     source=target.target_id,
-                    detail=redact_sensitive_text(detail)[: self.limits.max_output_characters],
+                    detail=redact_sensitive_text(detail)[
+                        : self.limits.max_output_characters
+                    ],
                 )
             ],
         )
@@ -332,14 +353,18 @@ class ObjectiveVerificationEngine:
             or PureWindowsPath(relative).is_absolute()
             or any(part in {"", ".", ".."} for part in posix.parts)
         ):
-            raise VerificationEngineError("Artifact path must remain inside the workspace.")
+            raise VerificationEngineError(
+                "Artifact path must remain inside the workspace."
+            )
         root = Path(workspace).resolve(strict=True)
         target = root.joinpath(*posix.parts)
         resolved = target.resolve(strict=False)
         try:
             resolved.relative_to(root)
         except ValueError as exc:
-            raise VerificationEngineError("Artifact path escapes the workspace.") from exc
+            raise VerificationEngineError(
+                "Artifact path escapes the workspace."
+            ) from exc
         return target
 
     @staticmethod

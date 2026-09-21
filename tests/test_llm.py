@@ -176,9 +176,7 @@ def test_provider_selection_requires_explicit_supported_configuration() -> None:
     with pytest.raises(MissingCredentialError, match="GEMINI_API_KEY"):
         create_provider(LLMSettings(provider="gemini", model="model"))
     with pytest.raises(LLMConfigurationError, match="LLM_MODEL"):
-        create_provider(
-            LLMSettings(provider="groq", groq_api_key="configured-secret")
-        )
+        create_provider(LLMSettings(provider="groq", groq_api_key="configured-secret"))
 
 
 def test_factory_never_fails_over_to_another_provider() -> None:

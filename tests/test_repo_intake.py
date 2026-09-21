@@ -134,7 +134,9 @@ def test_fixture_b_manifest_captures_structural_indicators(tmp_path: Path) -> No
     assert manifest.has_ci_workflows is True
 
 
-def test_run_workspace_paths_are_isolated_and_collision_resistant(tmp_path: Path) -> None:
+def test_run_workspace_paths_are_isolated_and_collision_resistant(
+    tmp_path: Path,
+) -> None:
     first = create_run_workspace(tmp_path / "runs")
     second = create_run_workspace(tmp_path / "runs")
 

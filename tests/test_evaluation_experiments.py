@@ -70,17 +70,15 @@ def test_comparison_is_paired_and_reports_case_status_changes() -> None:
     assert result.baseline_value == 1
     assert result.treatment_value == 0.95
     assert result.absolute_delta == -0.05
-    assert [(item.case_id, item.treatment_status) for item in result.status_changes] == [
-        ("eval-001", ReproductionStatus.FAILED)
-    ]
+    assert [
+        (item.case_id, item.treatment_status) for item in result.status_changes
+    ] == [("eval-001", ReproductionStatus.FAILED)]
 
 
 def test_comparison_rejects_different_case_order_or_metric_without_value() -> None:
     baseline = _report()
     treatment = _report()
-    treatment = treatment.model_copy(
-        update={"evaluation_set": "other-set"}
-    )
+    treatment = treatment.model_copy(update={"evaluation_set": "other-set"})
 
     with pytest.raises(ComparisonError, match="different evaluation sets"):
         compare_evaluation_reports(

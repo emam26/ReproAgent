@@ -74,7 +74,12 @@ class RunReportWriter:
     def _write_recipe(self, commands: list[str]) -> None:
         safe_commands: list[str] = []
         for command in commands:
-            if not isinstance(command, str) or not command.strip() or "\r" in command or "\n" in command:
+            if (
+                not isinstance(command, str)
+                or not command.strip()
+                or "\r" in command
+                or "\n" in command
+            ):
                 raise ReportError("Reproduction recipe contains an invalid command.")
             try:
                 validate_command(command, max_length=2_000)
@@ -121,7 +126,12 @@ class RunReportWriter:
             f"- Workflow succeeded: {report.initial_attempt.workflow_succeeded}",
         ]
         if report.documented_setup:
-            lines.extend(["- Documented setup:", *[f"  - {item}" for item in report.documented_setup]])
+            lines.extend(
+                [
+                    "- Documented setup:",
+                    *[f"  - {item}" for item in report.documented_setup],
+                ]
+            )
         lines.extend(["", "## Agent-assisted reproduction", ""])
         if report.agent_assisted_attempts:
             for attempt in report.agent_assisted_attempts:
@@ -137,7 +147,10 @@ class RunReportWriter:
             lines.append("- No agent-assisted attempt was supplied.")
         lines.extend(["", "## Failures", ""])
         if report.failures:
-            lines.extend(f"- `{failure.failure_id}`: {failure.detail}" for failure in report.failures)
+            lines.extend(
+                f"- `{failure.failure_id}`: {failure.detail}"
+                for failure in report.failures
+            )
         else:
             lines.append("- No failure record was supplied.")
         lines.extend(["", "## Diagnosis", ""])
@@ -184,7 +197,9 @@ class RunReportWriter:
 
     @staticmethod
     def _safe_json(value: object) -> str:
-        serialized = json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+        serialized = json.dumps(
+            value, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+        )
         safe = redact_sensitive_text(serialized)
         try:
             decoded = json.loads(safe)
@@ -205,6 +220,8 @@ class RunReportWriter:
         try:
             target.relative_to(self.root)
         except ValueError as exc:
-            raise ReportError("Report artifact path escapes the run directory.") from exc
+            raise ReportError(
+                "Report artifact path escapes the run directory."
+            ) from exc
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_text(value, encoding="utf-8", newline="\n")

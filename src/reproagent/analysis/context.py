@@ -18,7 +18,11 @@ class ContextLimits:
     max_total_characters: int = 120_000
 
     def __post_init__(self) -> None:
-        if self.max_files < 1 or self.max_file_bytes < 1 or self.max_total_characters < 1:
+        if (
+            self.max_files < 1
+            or self.max_file_bytes < 1
+            or self.max_total_characters < 1
+        ):
             raise ValueError("Context limits must be positive.")
 
 

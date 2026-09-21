@@ -71,8 +71,12 @@ def test_unified_patch_is_bounded_and_reversible(tmp_path: Path) -> None:
     assert (workspace / "app.py").read_text(encoding="utf-8") == 'print("broken")\n'
 
 
-@pytest.mark.parametrize("path", ["../outside.txt", "/tmp/outside.txt", "C:\\outside.txt", ".git/config"])
-def test_workspace_paths_cannot_escape_or_edit_git_metadata(tmp_path: Path, path: str) -> None:
+@pytest.mark.parametrize(
+    "path", ["../outside.txt", "/tmp/outside.txt", "C:\\outside.txt", ".git/config"]
+)
+def test_workspace_paths_cannot_escape_or_edit_git_metadata(
+    tmp_path: Path, path: str
+) -> None:
     workspace = tmp_path / "workspace"
     workspace.mkdir()
     (workspace / "app.py").write_text("safe\n", encoding="utf-8")
@@ -100,7 +104,9 @@ def test_symlink_escape_and_project_root_are_rejected(tmp_path: Path) -> None:
         WorkspaceEditor(Path(__file__).resolve().parents[1])
 
 
-def test_hash_conflict_size_limits_changed_file_limits_and_sensitive_patch(tmp_path: Path) -> None:
+def test_hash_conflict_size_limits_changed_file_limits_and_sensitive_patch(
+    tmp_path: Path,
+) -> None:
     workspace = tmp_path / "workspace"
     workspace.mkdir()
     (workspace / "app.py").write_text("old\n", encoding="utf-8")
@@ -113,7 +119,9 @@ def test_hash_conflict_size_limits_changed_file_limits_and_sensitive_patch(tmp_p
 
     limited = WorkspaceEditor(
         workspace,
-        limits=WorkspaceEditLimits(max_file_bytes=1_024, max_patch_characters=100, max_changed_files=1),
+        limits=WorkspaceEditLimits(
+            max_file_bytes=1_024, max_patch_characters=100, max_changed_files=1
+        ),
     )
     with pytest.raises(WorkspaceEditError, match="bound"):
         limited.apply_patch("x" * 101)
@@ -128,7 +136,9 @@ class _RepairAwareSandbox(Sandbox):
     def create(self) -> None:
         return None
 
-    def execute(self, command: str, *, timeout_seconds: float | None = None) -> ExecutionResult:
+    def execute(
+        self, command: str, *, timeout_seconds: float | None = None
+    ) -> ExecutionResult:
         content = (self.config.workspace_path / "app.py").read_text(encoding="utf-8")
         if "fixed" in content:
             return ExecutionResult(
@@ -181,7 +191,9 @@ def _planned_run(store: SQLiteRunStore) -> str:
     return run.run_id
 
 
-def test_controlled_pipeline_executes_repairable_fixture_and_rolls_back(tmp_path: Path) -> None:
+def test_controlled_pipeline_executes_repairable_fixture_and_rolls_back(
+    tmp_path: Path,
+) -> None:
     workspace = tmp_path / "workspace"
     run_directory = tmp_path / "run"
     workspace.mkdir()
@@ -244,7 +256,9 @@ def test_controlled_pipeline_does_not_claim_success_without_repair_or_verificati
         run_id = _planned_run(store)
         result = ControlledRepairPipeline(
             store,
-            PlanExecutionEngine(store, sandbox_factory=lambda config: _RepairAwareSandbox(config)),
+            PlanExecutionEngine(
+                store, sandbox_factory=lambda config: _RepairAwareSandbox(config)
+            ),
         ).run(
             _plan(),
             run_id=run_id,

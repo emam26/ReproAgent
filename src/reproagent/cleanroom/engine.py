@@ -77,7 +77,9 @@ class CleanRoomRunner:
     ) -> CleanRoomResult:
         source = Path(source_workspace).expanduser()
         if source.is_symlink() or not source.is_dir():
-            raise CleanRoomError("Clean-room source workspace must be a real directory.")
+            raise CleanRoomError(
+                "Clean-room source workspace must be a real directory."
+            )
         root = Path(run_directory).expanduser().resolve()
         root.mkdir(parents=True, exist_ok=True)
         clean_run_id = f"clean-room-{uuid.uuid4().hex}"
@@ -97,7 +99,9 @@ class CleanRoomRunner:
                 editor.apply_patch(recipe.patches_diff)
                 editor.write_patch_artifact()
             except Exception as exc:
-                raise CleanRoomError("Could not apply the clean-room recipe patch.") from exc
+                raise CleanRoomError(
+                    "Could not apply the clean-room recipe patch."
+                ) from exc
         self._write_recipe_artifacts(clean_run_directory, recipe)
         run = self.store.create_run(
             run_id=clean_run_id,
@@ -121,8 +125,7 @@ class CleanRoomRunner:
             workspace=clean_workspace,
         )
         clean_room_verified = (
-            execution.workflow_succeeded
-            and verification.status.value == "PASSED"
+            execution.workflow_succeeded and verification.status.value == "PASSED"
         )
         status = compute_reproduction_status(
             verification,
@@ -146,7 +149,9 @@ class CleanRoomRunner:
         commands: list[str] = []
         for command in recipe.recipe_commands:
             if redact_sensitive_text(command) != command:
-                raise CleanRoomError("Clean-room recipe contains credential-like material.")
+                raise CleanRoomError(
+                    "Clean-room recipe contains credential-like material."
+                )
             commands.append(command)
         (clean_run_directory / "reproduce.sh").write_text(
             "#!/usr/bin/env bash\nset -eu\n\n" + "\n".join(commands) + "\n",
@@ -169,31 +174,45 @@ class CleanRoomRunner:
     def _copy_workspace(self, source: Path, destination: Path) -> None:
         file_count = 0
         total_bytes = 0
-        for current, directories, files in os.walk(source, topdown=True, followlinks=False):
+        for current, directories, files in os.walk(
+            source, topdown=True, followlinks=False
+        ):
             current_path = Path(current)
             for directory in directories:
                 if (current_path / directory).is_symlink():
-                    raise CleanRoomError("Symlinked workspace directories are not copied.")
+                    raise CleanRoomError(
+                        "Symlinked workspace directories are not copied."
+                    )
             relative_dir = current_path.relative_to(source)
             target_dir = destination / relative_dir
             target_dir.mkdir(parents=True, exist_ok=True)
             for filename in files:
                 source_file = current_path / filename
                 if source_file.is_symlink() or not source_file.is_file():
-                    raise CleanRoomError("Symlinked or non-regular workspace files are not copied.")
+                    raise CleanRoomError(
+                        "Symlinked or non-regular workspace files are not copied."
+                    )
                 try:
                     size = source_file.stat().st_size
                 except OSError as exc:
-                    raise CleanRoomError("Could not inspect a source workspace file.") from exc
+                    raise CleanRoomError(
+                        "Could not inspect a source workspace file."
+                    ) from exc
                 file_count += 1
                 total_bytes += size
                 if file_count > self.limits.max_files:
-                    raise CleanRoomError("Source workspace exceeds the clean-room file limit.")
+                    raise CleanRoomError(
+                        "Source workspace exceeds the clean-room file limit."
+                    )
                 if total_bytes > self.limits.max_bytes:
-                    raise CleanRoomError("Source workspace exceeds the clean-room byte limit.")
+                    raise CleanRoomError(
+                        "Source workspace exceeds the clean-room byte limit."
+                    )
                 target = destination / source_file.relative_to(source)
                 target.parent.mkdir(parents=True, exist_ok=True)
                 try:
                     shutil.copyfile(source_file, target)
                 except OSError as exc:
-                    raise CleanRoomError("Could not copy source workspace file.") from exc
+                    raise CleanRoomError(
+                        "Could not copy source workspace file."
+                    ) from exc

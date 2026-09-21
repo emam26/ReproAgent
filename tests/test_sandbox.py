@@ -33,7 +33,9 @@ def test_resource_limits_are_configurable() -> None:
     assert limits.create_timeout_seconds == 45
 
 
-def test_docker_run_arguments_have_safety_and_ownership_defaults(tmp_path: Path) -> None:
+def test_docker_run_arguments_have_safety_and_ownership_defaults(
+    tmp_path: Path,
+) -> None:
     sandbox = DockerSandbox(
         SandboxConfig(workspace_path=tmp_path, run_id="unit-test"),
         docker_command=("docker",),
@@ -150,9 +152,7 @@ def test_docker_success_and_cleanup(docker_sandbox) -> None:
 def test_docker_captures_stderr(docker_sandbox) -> None:
     sandbox, command = docker_sandbox
     container_id = sandbox.container_id
-    result = sandbox.execute(
-        "python -c \"import sys; sys.stderr.write('warning\\n')\""
-    )
+    result = sandbox.execute("python -c \"import sys; sys.stderr.write('warning\\n')\"")
 
     assert container_id is not None
     assert result.exit_code == 0
@@ -166,7 +166,7 @@ def test_docker_captures_stderr(docker_sandbox) -> None:
 def test_docker_preserves_nonzero_exit_code(docker_sandbox) -> None:
     sandbox, command = docker_sandbox
     container_id = sandbox.container_id
-    result = sandbox.execute("python -c \"raise SystemExit(7)\"")
+    result = sandbox.execute('python -c "raise SystemExit(7)"')
 
     assert container_id is not None
     assert result.exit_code == 7
@@ -181,7 +181,7 @@ def test_docker_timeout_removes_exact_container(docker_sandbox) -> None:
     sandbox, command = docker_sandbox
     container_id = sandbox.container_id
     result = sandbox.execute(
-        "python -c \"import time; time.sleep(30)\"",
+        'python -c "import time; time.sleep(30)"',
         timeout_seconds=1,
     )
 
@@ -272,7 +272,7 @@ def test_docker_pid_limit_contains_safe_process_abuse_fixture(docker_sandbox) ->
     )
     encoded = base64.b64encode(source.encode()).decode()
     result = sandbox.execute(
-        f'python -c "import base64; exec(base64.b64decode(\'{encoded}\'))"',
+        f"python -c \"import base64; exec(base64.b64decode('{encoded}'))\"",
         timeout_seconds=10,
     )
 

@@ -31,7 +31,9 @@ def test_packaged_evaluation_set_has_stable_coverage() -> None:
         EvaluationCategory.NETWORK.value,
         EvaluationCategory.CLEAN_ROOM.value,
     }
-    assert all(case.source.value == "CONTROLLED_FIXTURE" for case in evaluation_set.cases)
+    assert all(
+        case.source.value == "CONTROLLED_FIXTURE" for case in evaluation_set.cases
+    )
 
 
 def test_evaluation_set_is_metadata_only_and_does_not_claim_observed_results() -> None:
@@ -40,7 +42,10 @@ def test_evaluation_set_is_metadata_only_and_does_not_claim_observed_results() -
 
     assert "observed_status" not in serialized
     assert "result" not in serialized.lower()
-    assert all(case.fixture_path.startswith("tests/fixtures/evaluation/") for case in evaluation_set.cases)
+    assert all(
+        case.fixture_path.startswith("tests/fixtures/evaluation/")
+        for case in evaluation_set.cases
+    )
 
 
 def test_evaluation_case_rejects_unsafe_fixture_paths() -> None:

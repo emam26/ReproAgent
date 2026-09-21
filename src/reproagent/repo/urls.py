@@ -73,7 +73,11 @@ def parse_github_url(value: str) -> GitHubRepository:
     if name.lower().endswith(".git"):
         name = name[:-4]
 
-    if not name or not _NAME_PATTERN.fullmatch(owner) or not _NAME_PATTERN.fullmatch(name):
+    if (
+        not name
+        or not _NAME_PATTERN.fullmatch(owner)
+        or not _NAME_PATTERN.fullmatch(name)
+    ):
         raise RepositoryUrlError("GitHub owner and repository names are malformed.")
 
     return GitHubRepository(

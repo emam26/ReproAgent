@@ -70,9 +70,7 @@ class WorkspaceEditResult(DiagnosticModel):
     patches_diff: str = Field(min_length=1, max_length=1_000_000)
 
 
-_HUNK = re.compile(
-    r"^@@ -(\d+)(?:,(\d+))? \+(\d+)(?:,(\d+))? @@(?: .*)?\r?\n?$"
-)
+_HUNK = re.compile(r"^@@ -(\d+)(?:,(\d+))? \+(\d+)(?:,(\d+))? @@(?: .*)?\r?\n?$")
 
 
 def _digest(path: str, content: bytes) -> FileDigest:
@@ -131,7 +129,9 @@ class WorkspaceEditor:
         try:
             text = content.decode("utf-8")
         except UnicodeDecodeError as exc:
-            raise WorkspaceEditError("Workspace editor only supports UTF-8 text files.") from exc
+            raise WorkspaceEditError(
+                "Workspace editor only supports UTF-8 text files."
+            ) from exc
         return WorkspaceFile(
             path=normalized,
             content=text,
@@ -160,7 +160,9 @@ class WorkspaceEditor:
         try:
             text = before.decode("utf-8")
         except UnicodeDecodeError as exc:
-            raise WorkspaceEditError("Workspace editor only supports UTF-8 text files.") from exc
+            raise WorkspaceEditError(
+                "Workspace editor only supports UTF-8 text files."
+            ) from exc
         if text.count(old) != 1:
             raise WorkspaceEditError("Replacement must match exactly one occurrence.")
         after = text.replace(old, new, 1).encode("utf-8")
@@ -170,7 +172,11 @@ class WorkspaceEditor:
     def apply_patch(self, patch: str) -> WorkspaceEditResult:
         """Apply a bounded standard unified diff without invoking a shell or Git."""
 
-        if not isinstance(patch, str) or not patch or len(patch) > self.limits.max_patch_characters:
+        if (
+            not isinstance(patch, str)
+            or not patch
+            or len(patch) > self.limits.max_patch_characters
+        ):
             raise WorkspaceEditError("Patch is empty or exceeds its configured bound.")
         if "\x00" in patch or "--- /" in patch or "+++ /" in patch:
             raise WorkspaceEditError("Patch contains unsafe absolute paths.")
@@ -247,7 +253,11 @@ class WorkspaceEditor:
         self._changes.clear()
 
     def _target(self, relative_path: str) -> tuple[str, Path]:
-        if not isinstance(relative_path, str) or not relative_path or "\x00" in relative_path:
+        if (
+            not isinstance(relative_path, str)
+            or not relative_path
+            or "\x00" in relative_path
+        ):
             raise WorkspaceEditError("Workspace path must be a non-empty string.")
         normalized = relative_path.replace("\\", "/")
         posix = PurePosixPath(normalized)
@@ -258,7 +268,9 @@ class WorkspaceEditor:
             or any(part in {"", ".", ".."} for part in posix.parts)
             or posix.parts[0] == ".git"
         ):
-            raise WorkspaceEditError("Workspace path must remain inside the target workspace.")
+            raise WorkspaceEditError(
+                "Workspace path must remain inside the target workspace."
+            )
         target = self.root.joinpath(*posix.parts)
         resolved = target.resolve(strict=False)
         self._ensure_inside(self.root, resolved)
@@ -275,9 +287,13 @@ class WorkspaceEditor:
         try:
             content = target.read_bytes()
         except OSError as exc:
-            raise WorkspaceEditError(f"Could not read workspace file: {normalized}") from exc
+            raise WorkspaceEditError(
+                f"Could not read workspace file: {normalized}"
+            ) from exc
         if len(content) > self.limits.max_file_bytes:
-            raise WorkspaceEditError("Workspace file exceeds the configured size limit.")
+            raise WorkspaceEditError(
+                "Workspace file exceeds the configured size limit."
+            )
         return content
 
     def _apply_bytes(
@@ -289,7 +305,10 @@ class WorkspaceEditor:
     ) -> None:
         if len(after) > self.limits.max_file_bytes:
             raise WorkspaceEditError("Edited file exceeds the configured size limit.")
-        if normalized not in self._changes and len(self._changes) >= self.limits.max_changed_files:
+        if (
+            normalized not in self._changes
+            and len(self._changes) >= self.limits.max_changed_files
+        ):
             raise WorkspaceEditError("Edit exceeds the changed-file limit.")
         existing = self._changes.get(normalized)
         original = before if existing is None else existing.original
@@ -305,7 +324,9 @@ class WorkspaceEditor:
         if after == original:
             self._changes.pop(normalized, None)
         else:
-            self._changes[normalized] = _RecordedChange(original=original, current=after)
+            self._changes[normalized] = _RecordedChange(
+                original=original, current=after
+            )
 
     def _parse_patch(self, patch: str) -> list[tuple[str, bytes, bytes]]:
         lines = patch.splitlines(keepends=True)
@@ -318,17 +339,23 @@ class WorkspaceEditor:
             old_path = self._patch_path(lines[index][4:])
             index += 1
             if index >= len(lines) or not lines[index].startswith("+++ "):
-                raise WorkspaceEditError("Unified patch is missing its new-file header.")
+                raise WorkspaceEditError(
+                    "Unified patch is missing its new-file header."
+                )
             new_path = self._patch_path(lines[index][4:])
             index += 1
             if old_path != new_path:
-                raise WorkspaceEditError("File rename and create/delete patches are not allowed.")
+                raise WorkspaceEditError(
+                    "File rename and create/delete patches are not allowed."
+                )
             normalized, target = self._target(old_path)
             before = self._read_existing(normalized, target)
             try:
                 text = before.decode("utf-8")
             except UnicodeDecodeError as exc:
-                raise WorkspaceEditError("Workspace editor only supports UTF-8 text files.") from exc
+                raise WorkspaceEditError(
+                    "Workspace editor only supports UTF-8 text files."
+                ) from exc
             old_lines = text.splitlines(keepends=True)
             newline = "\r\n" if "\r\n" in text else "\n"
             new_lines: list[str] = []
@@ -353,7 +380,9 @@ class WorkspaceEditor:
                         index += 1
                         continue
                     if not line or line[0] not in {" ", "+", "-"}:
-                        raise WorkspaceEditError("Unified patch contains an invalid hunk line.")
+                        raise WorkspaceEditError(
+                            "Unified patch contains an invalid hunk line."
+                        )
                     hunk_lines.append(line)
                     index += 1
                 expected_cursor = max(old_start - 1, 0)
@@ -366,11 +395,9 @@ class WorkspaceEditor:
                 for line in hunk_lines:
                     marker, content = line[0], line[1:]
                     if marker in {" ", "-"}:
-                        if (
-                            cursor >= len(old_lines)
-                            or old_lines[cursor].replace("\r\n", "\n")
-                            != content.replace("\r\n", "\n")
-                        ):
+                        if cursor >= len(old_lines) or old_lines[cursor].replace(
+                            "\r\n", "\n"
+                        ) != content.replace("\r\n", "\n"):
                             raise WorkspaceEditConflictError(
                                 f"Patch context does not match {normalized}."
                             )
@@ -380,11 +407,15 @@ class WorkspaceEditor:
                         consumed_old += 1
                     if marker == "+":
                         new_lines.append(
-                            content if newline == "\n" else content.replace("\n", "\r\n")
+                            content
+                            if newline == "\n"
+                            else content.replace("\n", "\r\n")
                         )
                         produced_new += 1
                 if consumed_old != old_count or produced_new != new_count:
-                    raise WorkspaceEditError("Unified patch hunk counts are inconsistent.")
+                    raise WorkspaceEditError(
+                        "Unified patch hunk counts are inconsistent."
+                    )
             if not saw_hunk:
                 raise WorkspaceEditError("Unified patch file section has no hunks.")
             new_lines.extend(old_lines[cursor:])
@@ -439,7 +470,9 @@ class WorkspaceEditor:
                 os.fsync(stream.fileno())
             os.replace(temporary, target)
         except OSError as exc:
-            raise WorkspaceEditError(f"Could not write workspace file: {target.name}") from exc
+            raise WorkspaceEditError(
+                f"Could not write workspace file: {target.name}"
+            ) from exc
         finally:
             if temporary is not None:
                 try:

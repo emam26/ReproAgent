@@ -49,7 +49,12 @@ def compute_reproduction_status(
     if verification is None:
         return _result(
             ReproductionStatus.BLOCKED,
-            [_reason(StatusReasonCode.VERIFICATION_UNAVAILABLE, "No verification result was supplied.")],
+            [
+                _reason(
+                    StatusReasonCode.VERIFICATION_UNAVAILABLE,
+                    "No verification result was supplied.",
+                )
+            ],
             verification,
             workflow_succeeded,
             clean_room_required,
@@ -68,7 +73,13 @@ def compute_reproduction_status(
     if verification.status is VerificationResultStatus.FAILED:
         return _result(
             ReproductionStatus.FAILED,
-            [_reason(StatusReasonCode.OBJECTIVE_VERIFICATION_FAILED, verification.summary, refs)],
+            [
+                _reason(
+                    StatusReasonCode.OBJECTIVE_VERIFICATION_FAILED,
+                    verification.summary,
+                    refs,
+                )
+            ],
             verification,
             workflow_succeeded,
             clean_room_required,
@@ -77,7 +88,13 @@ def compute_reproduction_status(
     if verification.status is VerificationResultStatus.UNAVAILABLE:
         return _result(
             ReproductionStatus.BLOCKED,
-            [_reason(StatusReasonCode.VERIFICATION_UNAVAILABLE, verification.summary, refs)],
+            [
+                _reason(
+                    StatusReasonCode.VERIFICATION_UNAVAILABLE,
+                    verification.summary,
+                    refs,
+                )
+            ],
             verification,
             workflow_succeeded,
             clean_room_required,
@@ -86,7 +103,13 @@ def compute_reproduction_status(
     if verification.status is VerificationResultStatus.UNSPECIFIED:
         return _result(
             ReproductionStatus.BLOCKED,
-            [_reason(StatusReasonCode.VERIFICATION_UNSPECIFIED, verification.summary, refs)],
+            [
+                _reason(
+                    StatusReasonCode.VERIFICATION_UNSPECIFIED,
+                    verification.summary,
+                    refs,
+                )
+            ],
             verification,
             workflow_succeeded,
             clean_room_required,
@@ -95,7 +118,13 @@ def compute_reproduction_status(
     if workflow_succeeded is not True:
         return _result(
             ReproductionStatus.PARTIAL,
-            [_reason(StatusReasonCode.WORKFLOW_NOT_CONFIRMED, "Workflow success was not objectively confirmed.", refs)],
+            [
+                _reason(
+                    StatusReasonCode.WORKFLOW_NOT_CONFIRMED,
+                    "Workflow success was not objectively confirmed.",
+                    refs,
+                )
+            ],
             verification,
             workflow_succeeded,
             clean_room_required,
@@ -104,7 +133,13 @@ def compute_reproduction_status(
     if verification.level in {VerificationLevel.L0, VerificationLevel.L1}:
         return _result(
             ReproductionStatus.PARTIAL,
-            [_reason(StatusReasonCode.VERIFICATION_LEVEL_INSUFFICIENT, "Verification did not reach target execution level.", refs)],
+            [
+                _reason(
+                    StatusReasonCode.VERIFICATION_LEVEL_INSUFFICIENT,
+                    "Verification did not reach target execution level.",
+                    refs,
+                )
+            ],
             verification,
             workflow_succeeded,
             clean_room_required,
@@ -118,7 +153,13 @@ def compute_reproduction_status(
         )
         return _result(
             ReproductionStatus.PARTIAL,
-            [_reason(code, "A clean-room rerun is required before claiming reproduction.", refs)],
+            [
+                _reason(
+                    code,
+                    "A clean-room rerun is required before claiming reproduction.",
+                    refs,
+                )
+            ],
             verification,
             workflow_succeeded,
             clean_room_required,
@@ -126,7 +167,13 @@ def compute_reproduction_status(
         )
     return _result(
         ReproductionStatus.REPRODUCED,
-        [_reason(StatusReasonCode.OBJECTIVE_VERIFICATION_PASSED, verification.summary, refs)],
+        [
+            _reason(
+                StatusReasonCode.OBJECTIVE_VERIFICATION_PASSED,
+                verification.summary,
+                refs,
+            )
+        ],
         verification,
         workflow_succeeded,
         clean_room_required,

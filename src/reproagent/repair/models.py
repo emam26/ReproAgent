@@ -81,7 +81,9 @@ class RepairExperimentResult(DiagnosticModel):
 
     action: RepairAction
     status: RepairExperimentStatus
-    before_failure_signature: str | None = Field(default=None, pattern=r"^[a-f0-9]{64}$")
+    before_failure_signature: str | None = Field(
+        default=None, pattern=r"^[a-f0-9]{64}$"
+    )
     after_failure_signature: str | None = Field(default=None, pattern=r"^[a-f0-9]{64}$")
     observation: RepairObservation | None = None
     evidence_improved: bool = False

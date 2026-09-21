@@ -114,7 +114,9 @@ def evaluate_observations(
             stage=stage,
             evaluated_cases=stage_evaluated[stage.value],
             successful_cases=stage_successes[stage.value],
-            success_rate=_rate(stage_successes[stage.value], stage_evaluated[stage.value]),
+            success_rate=_rate(
+                stage_successes[stage.value], stage_evaluated[stage.value]
+            ),
         )
         for stage in EvaluationStage
     ]

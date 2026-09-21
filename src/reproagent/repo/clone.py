@@ -37,9 +37,7 @@ class CloneResult(BaseModel):
     branch: str | None = None
 
 
-_CREDENTIAL_URL_PATTERN = re.compile(
-    r"(?P<scheme>[A-Za-z][A-Za-z0-9+.-]*://)[^/\s@]+@"
-)
+_CREDENTIAL_URL_PATTERN = re.compile(r"(?P<scheme>[A-Za-z][A-Za-z0-9+.-]*://)[^/\s@]+@")
 
 
 def create_run_workspace(runs_dir: Path) -> RunWorkspace:
@@ -49,7 +47,9 @@ def create_run_workspace(runs_dir: Path) -> RunWorkspace:
     try:
         runs_root.mkdir(parents=True, exist_ok=True)
     except OSError as exc:
-        raise RunWorkspaceError(f"Could not create runs directory: {runs_root}") from exc
+        raise RunWorkspaceError(
+            f"Could not create runs directory: {runs_root}"
+        ) from exc
 
     for _ in range(5):
         run_id = uuid.uuid4().hex
@@ -59,14 +59,18 @@ def create_run_workspace(runs_dir: Path) -> RunWorkspace:
         except FileExistsError:
             continue
         except OSError as exc:
-            raise RunWorkspaceError(f"Could not create run directory: {run_dir}") from exc
+            raise RunWorkspaceError(
+                f"Could not create run directory: {run_dir}"
+            ) from exc
 
         workspace_dir = run_dir / "workspace"
         repository_path = workspace_dir / "repository"
         try:
             workspace_dir.mkdir()
         except OSError as exc:
-            raise RunWorkspaceError(f"Could not create workspace directory: {workspace_dir}") from exc
+            raise RunWorkspaceError(
+                f"Could not create workspace directory: {workspace_dir}"
+            ) from exc
 
         return RunWorkspace(
             run_id=run_id,
@@ -125,7 +129,9 @@ def _run_git(
     except FileNotFoundError as exc:
         raise CloneError("Git is not available on PATH.") from exc
     except subprocess.TimeoutExpired as exc:
-        raise CloneError(f"Git command timed out after {timeout_seconds} seconds.") from exc
+        raise CloneError(
+            f"Git command timed out after {timeout_seconds} seconds."
+        ) from exc
 
     if completed.returncode != 0 and not allow_failure:
         output = completed.stderr or completed.stdout
@@ -189,8 +195,7 @@ def clone_repository(
     else:
         output = branch_result.stderr or branch_result.stdout
         raise CloneError(
-            "Could not determine the checked-out branch: "
-            f"{_clean_git_output(output)}"
+            f"Could not determine the checked-out branch: {_clean_git_output(output)}"
         )
 
     return CloneResult(

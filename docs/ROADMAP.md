@@ -19,7 +19,7 @@ BLOCKED
 
 # Current Phase
 
-## Phase 22 — Local Frontend / Dashboard
+## Phase 23 — Open-Source / Community Polish
 
 **Status: DONE**
 
@@ -855,9 +855,37 @@ dashboard is local-only and contains no provider credentials.
 
 ---
 
+# Phase 23 — Open-Source / Community Polish
+
+**Status: DONE**
+
+## Goal
+
+Make the repository understandable and contributor-ready without publishing,
+deploying, or adding production infrastructure.
+
+## Build
+
+* accurate README, architecture, API, dashboard, contributor, security, and
+  release-history documentation,
+* community templates and ordinary Python/frontend CI,
+* reviewed package metadata with isolated API and development extras,
+* local wheel/sdist build and fresh-environment installed-package smoke checks,
+* generated-artifact and secret exclusion review.
+
+## Acceptance Criteria
+
+Documentation commands match the implementation, CI validates ordinary
+contributions, package contents exclude generated runs/secrets, the wheel and
+source distribution build locally, and a fresh virtual environment can run the
+installed CLI and a safe fixture workflow. Phase 24 publication/deployment
+activities remain not started.
+
+---
+
 # Current Next Action
 
-Phase 20–22 acceptance criteria have passed. Phase 23 is the next requested phase.
+Phase 20–23 acceptance criteria have passed. Phase 24 remains not started.
 
 ```text
 Phase 14 → DONE
@@ -869,5 +897,6 @@ Phase 19 → DONE
 Phase 20 → DONE
 Phase 21 → DONE
 Phase 22 → DONE
-Phase 23 → NOT STARTED
+Phase 23 → DONE
+Phase 24 → NOT STARTED
 ```

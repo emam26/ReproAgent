@@ -121,12 +121,16 @@ def test_report_writer_emits_real_schema_versioned_artifacts(tmp_path: Path) -> 
     assert (run_dir / "commands.jsonl").is_file()
     assert (run_dir / "environment.json").is_file()
     assert (run_dir / "patches.diff").is_file()
-    assert (run_dir / "reproduce.sh").read_text(encoding="utf-8").endswith(
-        "python app.py\n"
+    assert (
+        (run_dir / "reproduce.sh")
+        .read_text(encoding="utf-8")
+        .endswith("python app.py\n")
     )
 
 
-def test_report_writer_does_not_create_optional_artifacts_without_data(tmp_path: Path) -> None:
+def test_report_writer_does_not_create_optional_artifacts_without_data(
+    tmp_path: Path,
+) -> None:
     run_dir = tmp_path / "run"
     paths = RunReportWriter(run_dir).write(_report())
 
@@ -136,15 +140,15 @@ def test_report_writer_does_not_create_optional_artifacts_without_data(tmp_path:
     assert not (run_dir / "reproduce.sh").exists()
 
 
-def test_report_writer_rejects_secret_recipe_and_secret_report_text(tmp_path: Path) -> None:
+def test_report_writer_rejects_secret_recipe_and_secret_report_text(
+    tmp_path: Path,
+) -> None:
     with pytest.raises(ReportError):
         RunReportWriter(tmp_path / "recipe").write(
             _report(),
             recipe_commands=["GITHUB_TOKEN=literal-secret python app.py"],
         )
 
-    unsafe = _report().model_copy(
-        update={"blockers": ["GITHUB_TOKEN=literal-secret"]}
-    )
+    unsafe = _report().model_copy(update={"blockers": ["GITHUB_TOKEN=literal-secret"]})
     with pytest.raises(ReportError):
         RunReportWriter(tmp_path / "report").write(unsafe)

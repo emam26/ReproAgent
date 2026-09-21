@@ -108,7 +108,7 @@ def check_docker_available(
     if result.returncode != 0:
         output = result.stderr or result.stdout
         raise DockerDaemonUnavailableError(
-            "Docker daemon is unavailable: " f"{_clean_docker_output(output)}"
+            f"Docker daemon is unavailable: {_clean_docker_output(output)}"
         )
     return DockerAvailability(
         command=list(command),
@@ -179,10 +179,7 @@ class DockerSandbox(Sandbox):
             "--tmpfs",
             "/tmp:rw,nosuid,nodev,size=64m",
             "--mount",
-            (
-                "type=bind,source="
-                f"{self._docker_workspace_path()},target=/workspace"
-            ),
+            (f"type=bind,source={self._docker_workspace_path()},target=/workspace"),
             "--workdir",
             "/workspace",
             self.config.image,
@@ -243,7 +240,9 @@ class DockerSandbox(Sandbox):
                 file_count += 1
                 total_bytes += file_size
                 if file_count > self.config.resource_limits.max_workspace_files:
-                    raise SandboxSecurityError("Workspace exceeds the file-count limit.")
+                    raise SandboxSecurityError(
+                        "Workspace exceeds the file-count limit."
+                    )
                 if total_bytes > self.config.resource_limits.max_workspace_bytes:
                     raise SandboxSecurityError("Workspace exceeds the byte-size limit.")
 

@@ -131,7 +131,10 @@ def build_manifest(
         if basename.startswith(_DOCUMENTATION_PREFIXES):
             documentation_files.add(relative)
             important_files.add(relative)
-        if fnmatch.fnmatch(basename, "requirements*.txt") or basename in _DEPENDENCY_NAMES:
+        if (
+            fnmatch.fnmatch(basename, "requirements*.txt")
+            or basename in _DEPENDENCY_NAMES
+        ):
             dependency_files.add(relative)
             important_files.add(relative)
         if basename.startswith("dockerfile"):

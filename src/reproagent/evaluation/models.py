@@ -80,13 +80,22 @@ class EvaluationCase(DiagnosticModel):
 
     @model_validator(mode="after")
     def _labels_are_consistent(self) -> Self:
-        if self.source is EvaluationSource.CONTROLLED_FIXTURE and not self.fixture_path.startswith(
-            "tests/fixtures/evaluation/"
+        if (
+            self.source is EvaluationSource.CONTROLLED_FIXTURE
+            and not self.fixture_path.startswith("tests/fixtures/evaluation/")
         ):
-            raise ValueError("Controlled fixtures must live under the evaluation fixture root.")
-        if self.category is EvaluationCategory.SUCCESS and self.expected_status is not ReproductionStatus.REPRODUCED:
+            raise ValueError(
+                "Controlled fixtures must live under the evaluation fixture root."
+            )
+        if (
+            self.category is EvaluationCategory.SUCCESS
+            and self.expected_status is not ReproductionStatus.REPRODUCED
+        ):
             raise ValueError("SUCCESS cases must expect REPRODUCED.")
-        if self.category is EvaluationCategory.SAFETY and self.expected_status is not ReproductionStatus.UNSAFE:
+        if (
+            self.category is EvaluationCategory.SAFETY
+            and self.expected_status is not ReproductionStatus.UNSAFE
+        ):
             raise ValueError("SAFETY cases must expect UNSAFE.")
         if self.category is EvaluationCategory.REPAIR and not self.repair_expected:
             raise ValueError("REPAIR cases must require a repair expectation.")

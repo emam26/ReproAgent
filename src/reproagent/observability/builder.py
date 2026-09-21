@@ -57,7 +57,11 @@ def _timeline_summary(event: Event) -> str:
         failure = result_payload.get("failure_kind")
         if isinstance(failure, str) and failure:
             return f"tool result: failed ({_safe_label(failure, 'unknown')})"
-        return "tool result: succeeded" if result.get("succeeded") else "tool result: failed"
+        return (
+            "tool result: succeeded"
+            if result.get("succeeded")
+            else "tool result: failed"
+        )
     if event.event_type is EventType.RUN_FINISHED:
         outcome = _safe_label(payload.get("outcome"), "unknown")
         return f"run finished: {outcome}"
@@ -74,12 +78,16 @@ def _repair_count(events: Iterable[Event]) -> int:
         if event.event_type is EventType.ATTEMPT_RECORDED:
             attempt = _nested_mapping(payload, "attempt")
             attempt_type = attempt.get("attempt_type")
-            if isinstance(attempt_type, str) and attempt_type.lower().startswith("repair"):
+            if isinstance(attempt_type, str) and attempt_type.lower().startswith(
+                "repair"
+            ):
                 attempt_count += 1
         elif event.event_type is EventType.AGENT_ACTION_RECORDED:
             action = _nested_mapping(payload, "agent_action")
             action_type = action.get("action_type")
-            if isinstance(action_type, str) and action_type.lower().startswith("repair"):
+            if isinstance(action_type, str) and action_type.lower().startswith(
+                "repair"
+            ):
                 action_count += 1
     return max(attempt_count, action_count)
 
@@ -167,10 +175,7 @@ def _validate_events(events: list[Event]) -> list[Event]:
         raise ObservabilityError("An observability stream cannot mix run IDs.")
     if [event.sequence for event in ordered] != expected_sequence:
         raise ObservabilityError("Event sequences must be contiguous and unique.")
-    if any(
-        later.timestamp < earlier.timestamp
-        for earlier, later in pairwise(ordered)
-    ):
+    if any(later.timestamp < earlier.timestamp for earlier, later in pairwise(ordered)):
         raise ObservabilityError("Event timestamps must be non-decreasing.")
     return ordered
 
@@ -208,9 +213,7 @@ def build_run_observability(
         )
         for stage in dict.fromkeys(event.stage for event in ordered)
     ]
-    llm_calls, input_tokens, output_tokens, token_usage_complete = _llm_metrics(
-        ordered
-    )
+    llm_calls, input_tokens, output_tokens, token_usage_complete = _llm_metrics(ordered)
     container_ids, network_modes = _docker_observations(ordered)
     timeline = [
         TimelineEntry(

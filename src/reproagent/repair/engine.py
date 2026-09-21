@@ -71,7 +71,9 @@ class RepairExperimentEngine:
             self._record(run_id, "repair_rejected", result)
             return result
         if self.repair_count >= self.limits.max_repairs:
-            return self._stopped(action, before_failure_signature, "Maximum repairs reached.", run_id)
+            return self._stopped(
+                action, before_failure_signature, "Maximum repairs reached.", run_id
+            )
         if (
             before_failure_signature is not None
             and self.failure_signatures[before_failure_signature]
@@ -84,7 +86,9 @@ class RepairExperimentEngine:
                 run_id,
             )
         if action.action_type is RepairActionType.STOP_UNREPAIRABLE:
-            return self._stopped(action, before_failure_signature, "Diagnosis requested a stop.", run_id)
+            return self._stopped(
+                action, before_failure_signature, "Diagnosis requested a stop.", run_id
+            )
         self.repair_count += 1
         self._record(run_id, "repair_proposed", action.model_dump(mode="json"))
         try:
@@ -107,7 +111,9 @@ class RepairExperimentEngine:
             )
             self._record(run_id, "repair_rejected", result)
             return result
-        self._record(run_id, "repair_applied", {"action": action.model_dump(mode="json")})
+        self._record(
+            run_id, "repair_applied", {"action": action.model_dump(mode="json")}
+        )
         try:
             observation = observe(application)
             after_signature = observation.failure_signature

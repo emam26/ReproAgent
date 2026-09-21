@@ -10,9 +10,7 @@ class Settings(BaseModel):
     """Minimal application settings used by the Phase 0 project."""
 
     runs_dir: Path = Field(
-        default_factory=lambda: Path(
-            os.getenv("REPROAGENT_RUNS_DIR", "runs")
-        )
+        default_factory=lambda: Path(os.getenv("REPROAGENT_RUNS_DIR", "runs"))
     )
 
 

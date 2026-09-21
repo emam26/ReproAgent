@@ -101,9 +101,14 @@ class RetryingLLMProvider(LLMProvider):
                     latency_seconds=time.monotonic() - started,
                 )
             except LLMError as exc:
-                if not exc.retryable or attempt_number >= self.retry_policy.max_attempts:
+                if (
+                    not exc.retryable
+                    or attempt_number >= self.retry_policy.max_attempts
+                ):
                     raise
-                delay = self.retry_policy.base_delay_seconds * (2 ** (attempt_number - 1))
+                delay = self.retry_policy.base_delay_seconds * (
+                    2 ** (attempt_number - 1)
+                )
                 if delay:
                     await asyncio.sleep(delay)
         raise AssertionError("Retry loop terminated unexpectedly.")

@@ -561,8 +561,7 @@ class LLMProvider:
         self,
         context,
         available_tools,
-    ):
-        ...
+    ): ...
 ```
 
 Future provider structure:

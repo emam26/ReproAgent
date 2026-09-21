@@ -17,8 +17,10 @@ def load_evaluation_set() -> EvaluationSet:
     """Load the packaged, versioned evaluation set without executing fixtures."""
 
     try:
-        raw = files("reproagent.evaluation").joinpath("evaluation_set.json").read_text(
-            encoding="utf-8"
+        raw = (
+            files("reproagent.evaluation")
+            .joinpath("evaluation_set.json")
+            .read_text(encoding="utf-8")
         )
         value: Any = json.loads(raw)
         return EvaluationSet.model_validate(value)

@@ -151,9 +151,7 @@ def test_observability_projects_persisted_events_and_results(tmp_path: Path) -> 
         range(1, len(observation.timeline) + 1)
     )
     assert observation.query_timeline(stage=Stage.EXECUTE)
-    assert "should-never-appear" not in json.dumps(
-        observation.model_dump(mode="json")
-    )
+    assert "should-never-appear" not in json.dumps(observation.model_dump(mode="json"))
 
 
 def test_observability_index_supports_evaluation_queries() -> None:

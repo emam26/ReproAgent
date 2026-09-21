@@ -67,8 +67,8 @@ def ensure_utc(timestamp: datetime) -> datetime:
 def format_timestamp(timestamp: datetime) -> str:
     """Serialize a timezone-aware timestamp in a stable UTC format."""
 
-    return ensure_utc(timestamp).isoformat(timespec="microseconds").replace(
-        "+00:00", "Z"
+    return (
+        ensure_utc(timestamp).isoformat(timespec="microseconds").replace("+00:00", "Z")
     )
 
 

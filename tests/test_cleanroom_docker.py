@@ -94,7 +94,10 @@ def test_clean_room_reproduces_from_fresh_workspace_and_recipe(
     assert result.verification.status.value == "PASSED"
     assert result.status.status is ReproductionStatus.REPRODUCED
     assert source.joinpath("app.py").read_text(encoding="utf-8") == original
-    assert Path(result.clean_workspace).joinpath("app.py").read_text(encoding="utf-8") != original
+    assert (
+        Path(result.clean_workspace).joinpath("app.py").read_text(encoding="utf-8")
+        != original
+    )
     clean_run_directory = Path(result.clean_workspace).parent
     assert clean_run_directory.joinpath("reproduce.sh").is_file()
     assert clean_run_directory.joinpath("REPRODUCTION.md").is_file()

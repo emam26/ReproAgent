@@ -112,7 +112,9 @@ class SQLiteRunStore(RunStore):
             yield
         except sqlite3.Error as exc:
             self._connection.rollback()
-            raise PersistenceError("SQLite operation failed and was rolled back.") from exc
+            raise PersistenceError(
+                "SQLite operation failed and was rolled back."
+            ) from exc
         except Exception:
             self._connection.rollback()
             raise
@@ -121,7 +123,9 @@ class SQLiteRunStore(RunStore):
                 self._connection.commit()
             except sqlite3.Error as exc:
                 self._connection.rollback()
-                raise PersistenceError("SQLite commit failed and was rolled back.") from exc
+                raise PersistenceError(
+                    "SQLite commit failed and was rolled back."
+                ) from exc
 
     def _load_run(self, run_id: str) -> RunState:
         row = self._connection.execute(

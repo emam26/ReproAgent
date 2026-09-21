@@ -47,7 +47,9 @@ class RunReport(DiagnosticModel):
     goal: str = Field(min_length=1, max_length=500)
     documented_setup: list[str] = Field(default_factory=list, max_length=100)
     initial_attempt: ReportAttempt
-    agent_assisted_attempts: list[ReportAttempt] = Field(default_factory=list, max_length=100)
+    agent_assisted_attempts: list[ReportAttempt] = Field(
+        default_factory=list, max_length=100
+    )
     failures: list[ReportFailure] = Field(default_factory=list, max_length=100)
     diagnoses: list[DiagnosisResult] = Field(default_factory=list, max_length=50)
     repairs: list[RepairExperimentResult] = Field(default_factory=list, max_length=50)

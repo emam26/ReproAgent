@@ -19,7 +19,9 @@ from reproagent.sandbox import (
 )
 
 
-def test_public_url_policy_rejects_private_destinations_credentials_and_queries() -> None:
+def test_public_url_policy_rejects_private_destinations_credentials_and_queries() -> (
+    None
+):
     with pytest.raises(PublicUrlError):
         validate_public_url("https://127.0.0.1/model.bin")
     with pytest.raises(PublicUrlError):
@@ -39,7 +41,9 @@ def test_public_url_policy_rejects_private_destinations_credentials_and_queries(
 
 
 class _FakeResponse:
-    def __init__(self, status: int, *, headers: dict[str, str], content: bytes = b"") -> None:
+    def __init__(
+        self, status: int, *, headers: dict[str, str], content: bytes = b""
+    ) -> None:
         self.status = status
         self.headers = headers
         self.content = content
@@ -112,7 +116,11 @@ def test_download_revalidates_redirects_and_enforces_byte_limits() -> None:
             "https://example.org/model.bin",
             resolver=_public_resolver,
             opener=_FakeOpener(
-                [_FakeResponse(302, headers={"Location": "https://private.example/model"})]
+                [
+                    _FakeResponse(
+                        302, headers={"Location": "https://private.example/model"}
+                    )
+                ]
             ),
         )
 
@@ -126,9 +134,13 @@ def test_git_intake_uses_sterile_noninteractive_configuration(
     def fake_run(args, **kwargs):  # type: ignore[no-untyped-def]
         calls.append((args, kwargs["env"]))
         if "rev-parse" in args:
-            return clone_module.subprocess.CompletedProcess(args, 0, stdout="a" * 40 + "\n", stderr="")
+            return clone_module.subprocess.CompletedProcess(
+                args, 0, stdout="a" * 40 + "\n", stderr=""
+            )
         if "symbolic-ref" in args:
-            return clone_module.subprocess.CompletedProcess(args, 1, stdout="", stderr="")
+            return clone_module.subprocess.CompletedProcess(
+                args, 1, stdout="", stderr=""
+            )
         return clone_module.subprocess.CompletedProcess(args, 0, stdout="", stderr="")
 
     monkeypatch.setattr(clone_module.subprocess, "run", fake_run)
