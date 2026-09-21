@@ -19,7 +19,7 @@ BLOCKED
 
 # Current Phase
 
-## Phase 8 — Autonomous Diagnosis
+## Phase 9 — Controlled Repair Tools
 
 **Status: DONE**
 
@@ -510,7 +510,7 @@ stopping, call limits, and secret exclusion.
 
 # Phase 9 — Controlled Repair Tools
 
-**Status: NOT STARTED**
+**Status: DONE**
 
 ## Goal
 
@@ -521,14 +521,15 @@ Convert an accepted diagnosis into one finite policy-checked repair experiment.
 * finite repair vocabulary,
 * evidence, risk, reversibility, and expected-effect requirements,
 * deterministic policy validation,
-* bounded Python/dependency/asset experiments,
-* before/after signatures and evidence-improvement records,
-* no host execution or global Docker management.
+* bounded Python/dependency/asset experiment contracts,
+* before/after signatures and objective evidence-improvement records,
+* pure plan transformations with rollback,
+* append-only repair events with no host execution or global Docker management.
 
 ## Acceptance Criteria
 
 Each repair action and policy rejection has fixture coverage, including limits,
-repetition blocking, persistence, and rollback metadata.
+repetition blocking, persistence, unsafe inputs, and rollback metadata.
 
 ---
 
@@ -768,11 +769,9 @@ Do not work on this until repository-level reproduction is reliable.
 
 # Current Next Action
 
-Phase 8 acceptance criteria have passed.
+Phase 9 acceptance criteria have passed.
 
 ```text
-Phase 8 → DONE
-Phase 9 → NOT STARTED
+Phase 9 → DONE
+Phase 10 → NOT STARTED
 ```
-
-Stop after Phase 8 for this task. Do not begin Phase 9 automatically.

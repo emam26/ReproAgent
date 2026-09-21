@@ -7,12 +7,12 @@ evidence-backed results.
 
 ## Development status
 
-Phases 0–7.5 are complete. The current CLI accepts supported public GitHub URLs,
+Phases 0–9 are complete. The current CLI accepts supported public GitHub URLs,
 clones them into an isolated run workspace, and generates a deterministic
 structural manifest. The programmatic pipeline can analyze a manifest, create a
 finite plan, and execute that plan in Docker with persisted evidence. Full CLI
-pipeline integration, autonomous repair, and formal reproducibility verification
-are not implemented yet.
+pipeline integration, controlled file editing, and formal reproducibility
+verification are not implemented yet.
 
 ## Installation
 
@@ -110,3 +110,13 @@ hypotheses and future repair actions, bounded provider calls, repetition limits,
 policy checks, prompt-injection separation, and append-only diagnosis events.
 Diagnosis never executes commands or edits repositories. See
 [`docs/DIAGNOSIS.md`](docs/DIAGNOSIS.md).
+
+## Controlled repair experiments
+
+Phase 9 converts accepted diagnoses into finite, policy-checked repair
+experiments. It provides typed invocation, dependency, Python-version,
+environment, asset, path, patch, evidence-gathering, and stop actions; bounded
+risk and repetition limits; objective before/after observations; rollback
+metadata; and append-only repair events. It performs no host execution,
+repository mutation, download, or global Docker management. See
+[`docs/REPAIRS.md`](docs/REPAIRS.md).
