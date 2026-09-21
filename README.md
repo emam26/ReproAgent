@@ -153,3 +153,11 @@ Phase 13 computes `REPRODUCED`, `PARTIAL`, `BLOCKED`, `FAILED`, or `UNSAFE` from
 machine-readable verification, workflow, clean-room, and safety evidence. The
 status is separate from `RunOutcome`; a successful workflow alone cannot claim
 reproduction. See [`docs/STATUS.md`](docs/STATUS.md).
+
+## Reports and run artifacts
+
+Phase 14 writes schema-versioned `run.json` and `report.md` artifacts, clearly
+separating official documented reproduction from agent-assisted attempts. When
+real data exists it also writes events, commands, environment, exact patches,
+and a validated reproduction recipe without fabricating empty artifacts or
+secrets. See [`docs/REPORTING.md`](docs/REPORTING.md).

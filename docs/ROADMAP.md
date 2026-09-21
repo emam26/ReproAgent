@@ -19,7 +19,7 @@ BLOCKED
 
 # Current Phase
 
-## Phase 13 — Final Reproducibility Status
+## Phase 14 — Reporting + Run Artifacts
 
 **Status: DONE**
 
@@ -640,37 +640,26 @@ and clean-room requirements.
 
 ---
 
-# Phase 14 — Portfolio Polish
+# Phase 14 — Reporting + Run Artifacts
 
-**Status: NOT STARTED**
+**Status: DONE**
 
 ## Goal
 
-Make the project interview-ready.
+Produce useful schema-versioned run artifacts and an evidence-backed report.
 
-Add:
+## Build
 
-* architecture diagram,
-* demo video/GIF,
-* benchmark results,
-* failure taxonomy,
-* example reports,
-* security explanation,
-* design tradeoffs,
-* polished README.
+* `run.json`, `report.md`, and real-data-only optional artifacts,
+* documented versus agent-assisted reproduction sections,
+* events, commands, environment, patches, and recipe serialization,
+* secret-safe bounded report generation.
 
-README should explain:
+## Acceptance Criteria
 
-```text
-problem
-why an agent is appropriate
-architecture
-safety
-evaluation
-results
-limitations
-example run
-```
+Reports explain repository, commit, goal, documented setup, attempts, failures,
+diagnosis, repairs, verification, final status, blockers, and documentation
+gaps without fabricating facts or persisting secrets.
 
 ---
 
@@ -708,9 +697,9 @@ Do not work on this until repository-level reproduction is reliable.
 
 # Current Next Action
 
-Phase 13 acceptance criteria have passed.
+Phase 14 acceptance criteria have passed.
 
 ```text
-Phase 13 → DONE
-Phase 14 → NOT STARTED
+Phase 14 → DONE
+Phase 15 → NOT STARTED
 ```
