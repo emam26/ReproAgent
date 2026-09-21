@@ -19,7 +19,7 @@ BLOCKED
 
 # Current Phase
 
-## Phase 16 — Observability
+## Phase 20 — CLI Polish
 
 **Status: DONE**
 
@@ -778,15 +778,30 @@ generalization claim is fabricated.
 
 # Phase 20 — CLI Polish
 
-**Status: NOT STARTED**
+**Status: DONE**
 
-Phase 20 is the next implementation phase.
+## Goal
+
+Provide a small, predictable command surface for intake and artifact inspection.
+
+## Build
+
+* validated workflow goals and `--runs-dir` isolation,
+* `--version`, `run --json`, `runs`, and `report` commands,
+* stable exit behavior and path-safe run-ID handling,
+* CLI tests and documentation without wiring an unbuilt full pipeline.
+
+## Acceptance Criteria
+
+CLI help, version, intake validation, JSON output, run listing, report display,
+and path rejection are fixture-tested; commands do not execute target code or
+leak raw exceptions/secrets.
 
 ---
 
 # Current Next Action
 
-Phase 19 acceptance criteria have passed; Phase 20 is not started.
+Phase 20 acceptance criteria have passed; requested roadmap phases are complete.
 
 ```text
 Phase 14 → DONE
@@ -795,5 +810,5 @@ Phase 16 → DONE
 Phase 17 → DONE
 Phase 18 → DONE
 Phase 19 → DONE
-Phase 20 → NOT STARTED
+Phase 20 → DONE
 ```

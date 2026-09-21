@@ -7,7 +7,7 @@ evidence-backed results.
 
 ## Development status
 
-Phases 0–17 are complete. The current CLI accepts supported public GitHub URLs,
+Phases 0–20 are complete. The current CLI accepts supported public GitHub URLs,
 clones them into an isolated run workspace, and generates a deterministic
 structural manifest. The programmatic pipeline can analyze a manifest, create a
 finite plan, and execute that plan in Docker with persisted evidence. Full CLI
@@ -41,11 +41,17 @@ ruff check .
 ```bash
 reproagent --help
 reproagent version
-reproagent run https://github.com/example/project
+reproagent --version
+reproagent run https://github.com/example/project --goal auto
+reproagent runs
+reproagent report <run-id>
 ```
 
-The `run` command performs repository intake only. It does not install
-dependencies, execute target code, run target tests, or perform reproduction.
+The `run` command performs repository intake only and accepts `auto`, `install`,
+`tests`, or `demo` as an explicit goal. It does not install dependencies,
+execute target code, run target tests, or perform reproduction. `--json` is
+available on `run` and `runs` for scripting; `report` reads only an existing
+`report.md` artifact.
 
 ## Docker sandbox
 
