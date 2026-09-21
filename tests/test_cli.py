@@ -10,6 +10,9 @@ def test_help_command_exits_successfully() -> None:
 
     assert result.exit_code == 0
     assert "Audit whether open-source software can be reproduced" in result.stdout
+    assert "audit" in result.stdout
+    assert "inspect" in result.stdout
+    assert "doctor" in result.stdout
 
 
 def test_version_command() -> None:
@@ -90,3 +93,29 @@ def test_run_command_rejects_unsupported_url() -> None:
 
     assert result.exit_code == 1
     assert "Only HTTPS GitHub repository URLs are supported" in result.stderr
+
+
+def test_doctor_json_is_secret_free() -> None:
+    result = runner.invoke(app, ["doctor", "--json"])
+
+    assert result.exit_code == 0
+    assert "GEMINI_API_KEY" not in result.stdout
+    assert "GROQ_API_KEY" not in result.stdout
+    assert "llm_configured" in result.stdout
+
+
+def test_status_rejects_path_traversal_before_database_access(tmp_path) -> None:
+    result = runner.invoke(
+        app,
+        ["status", "..\\outside", "--runs-dir", str(tmp_path)],
+    )
+
+    assert result.exit_code == 1
+    assert "unsupported path characters" in result.stderr
+
+
+def test_cleanup_rejects_path_traversal_before_docker_access() -> None:
+    result = runner.invoke(app, ["cleanup", "--run-id", "..\\outside"])
+
+    assert result.exit_code == 1
+    assert "unsupported path characters" in result.stderr

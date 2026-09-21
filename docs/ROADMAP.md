@@ -782,26 +782,28 @@ generalization claim is fabricated.
 
 ## Goal
 
-Provide a small, predictable command surface for intake and artifact inspection.
+Provide a predictable public command surface over the complete bounded engine.
 
 ## Build
 
-* validated workflow goals and `--runs-dir` isolation,
-* `--version`, `run --json`, `runs`, and `report` commands,
-* stable exit behavior and path-safe run-ID handling,
-* CLI tests and documentation without wiring an unbuilt full pipeline.
+* shared application service for CLI workflows,
+* `audit`, `inspect`, `doctor`, `runs`, `status`, `report`, `cleanup`, `config`,
+  and compatibility `run` commands,
+* Docker-only execution, objective verification, clean-room reruns, and reports,
+* stable exit behavior, path-safe run-ID handling, and secret-free output.
 
 ## Acceptance Criteria
 
-CLI help, version, intake validation, JSON output, run listing, report display,
-and path rejection are fixture-tested; commands do not execute target code or
-leak raw exceptions/secrets.
+CLI help, version, intake validation, JSON output, audit/inspection fixture
+workflows, run listing, status, report display, doctor checks, owned-container
+cleanup validation, and path rejection are fixture-tested. Commands do not
+execute target code on the host or leak raw exceptions/secrets.
 
 ---
 
 # Current Next Action
 
-Phase 20 acceptance criteria have passed; requested roadmap phases are complete.
+Phase 20 acceptance criteria have passed. Phase 21 is the next requested phase.
 
 ```text
 Phase 14 → DONE
@@ -811,4 +813,5 @@ Phase 17 → DONE
 Phase 18 → DONE
 Phase 19 → DONE
 Phase 20 → DONE
+Phase 21 → NOT STARTED
 ```

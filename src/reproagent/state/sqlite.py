@@ -272,6 +272,18 @@ class SQLiteRunStore(RunStore):
         except sqlite3.Error as exc:
             raise PersistenceError("Could not load persisted run state.") from exc
 
+    def list_runs(self) -> list[RunState]:
+        """Load all persisted run snapshots in deterministic creation order."""
+
+        try:
+            rows = self._connection.execute(
+                "SELECT run_id, stage, outcome, context_json, created_at, updated_at "
+                "FROM runs ORDER BY created_at ASC, run_id ASC"
+            ).fetchall()
+            return [self._run_state_from_row(row) for row in rows]
+        except sqlite3.Error as exc:
+            raise PersistenceError("Could not list persisted run state.") from exc
+
     def transition(self, run_id: str, requested_stage: Stage) -> RunState:
         """Atomically persist a legal transition and its audit event."""
 

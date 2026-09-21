@@ -44,6 +44,10 @@ class RunStore(ABC):
         """Load a persisted run snapshot."""
 
     @abstractmethod
+    def list_runs(self) -> list[RunState]:
+        """Load all persisted run snapshots in creation order."""
+
+    @abstractmethod
     def transition(self, run_id: str, requested_stage: Stage) -> RunState:
         """Atomically transition a run and append a transition event."""
 
