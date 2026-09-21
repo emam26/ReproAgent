@@ -5,6 +5,7 @@ from .service import (
     AuditResult,
     AuditService,
     InspectionResult,
+    ReproductionResult,
     ServiceError,
 )
 
@@ -13,5 +14,6 @@ __all__ = [
     "AuditResult",
     "AuditService",
     "InspectionResult",
+    "ReproductionResult",
     "ServiceError",
 ]

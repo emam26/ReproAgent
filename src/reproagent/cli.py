@@ -471,6 +471,36 @@ def config(
     doctor(json_output=json_output)
 
 
+@app.command()
+def serve(
+    host: Annotated[
+        str,
+        typer.Option("--host", help="Bind address; loopback is the safe default."),
+    ] = "127.0.0.1",
+    port: Annotated[
+        int,
+        typer.Option("--port", min=1, max=65_535, help="Local API port."),
+    ] = 8000,
+    runs_dir: Annotated[
+        Path | None,
+        typer.Option(
+            "--runs-dir", help="Directory containing run state.", path_type=Path
+        ),
+    ] = None,
+) -> None:
+    """Serve the optional local FastAPI control API."""
+
+    try:
+        from .api import run_server
+    except ImportError as exc:
+        _error(
+            "The local API is optional; install reproagent[api] first.",
+            json_output=False,
+        )
+        raise typer.Exit(code=1) from exc
+    run_server(host=host, port=port, runs_dir=runs_dir)
+
+
 def _resolve_run_directory(run_id: str, runs_dir: Path | None) -> Path:
     _validate_run_id(run_id)
     root = (
@@ -479,6 +509,9 @@ def _resolve_run_directory(run_id: str, runs_dir: Path | None) -> Path:
         .resolve()
     )
     candidate = (root / run_id).resolve()
+    if (root / run_id).is_symlink():
+        _error("Run directory cannot be a symlink.", json_output=False)
+        raise typer.Exit(code=1)
     try:
         candidate.relative_to(root)
     except ValueError as exc:

@@ -19,7 +19,7 @@ BLOCKED
 
 # Current Phase
 
-## Phase 20 — CLI Polish
+## Phase 21 — Local API
 
 **Status: DONE**
 
@@ -801,6 +801,33 @@ execute target code on the host or leak raw exceptions/secrets.
 
 ---
 
+# Phase 21 — Local API
+
+**Status: DONE**
+
+## Goal
+
+Expose a thin local FastAPI control interface over the existing application
+service and SQLite state without creating a second workflow engine.
+
+## Build
+
+* versioned `/api/v1` health, version, audit, run, event, report, and replay
+  endpoints,
+* strict Pydantic request and response schemas,
+* secret-safe bounded response projections and path/ID validation,
+* local Uvicorn startup with loopback as the default bind address,
+* real persisted-plan clean-room replay through the existing Docker boundary.
+
+## Acceptance Criteria
+
+Framework-client fixtures cover health, version, audit submission, validation,
+run listing/detail, unknown runs, events, reports, replay, unsafe IDs, secret
+redaction, error translation, and shared-service consistency. The API is
+documented as a local development/control API rather than a public service.
+
+---
+
 # Current Next Action
 
 Phase 20 acceptance criteria have passed. Phase 21 is the next requested phase.
@@ -813,5 +840,5 @@ Phase 17 → DONE
 Phase 18 → DONE
 Phase 19 → DONE
 Phase 20 → DONE
-Phase 21 → NOT STARTED
+Phase 21 → DONE
 ```

@@ -91,7 +91,11 @@ def test_audit_success_requires_clean_room_and_writes_report(tmp_path: Path) -> 
             "pyproject.toml": "[project]\nname='fixture'\nversion='0.1.0'\n",
             "app.py": "print('ok')\n",
         },
-        [[_execution(), _execution()], [_execution(), _execution()]],
+        [
+            [_execution(), _execution()],
+            [_execution(), _execution()],
+            [_execution(), _execution()],
+        ],
     )
 
     result = service.audit(_request())
@@ -102,6 +106,11 @@ def test_audit_success_requires_clean_room_and_writes_report(tmp_path: Path) -> 
     assert result.reproduction_package_path is not None
     assert (result.report_path.parent / "plan.json").is_file()
     assert (result.report_path.parent / "run.json").is_file()
+
+    replay = service.reproduce(result.run_id)
+
+    assert replay.status.status is ReproductionStatus.REPRODUCED
+    assert replay.source_run_id == result.run_id
 
 
 def test_audit_failure_is_objectively_reported(tmp_path: Path) -> None:

@@ -11,6 +11,7 @@ import asyncio
 import json
 import os
 import platform
+import re
 import shutil
 from collections.abc import Callable
 from pathlib import Path
@@ -111,6 +112,18 @@ class InspectionResult(BaseModel):
     run_directory: Path
     manifest: RepositoryManifest
     analysis: RepositoryAnalysis
+
+
+class ReproductionResult(BaseModel):
+    """Result of replaying a persisted plan in a fresh Docker clean-room sandbox."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    source_run_id: str
+    clean_run_id: str
+    status: ReproductionStatusResult
+    verification: VerificationResult
+    package_path: Path
 
 
 class ServiceError(RuntimeError):
@@ -330,6 +343,42 @@ class AuditService:
                     "Audit failed safely; inspect the persisted run events."
                 ) from exc
 
+    def reproduce(self, run_id: str) -> ReproductionResult:
+        """Replay a persisted plan through a fresh Docker clean-room run."""
+
+        run_directory = self._run_directory(run_id)
+        plan_path = run_directory / "plan.json"
+        source_workspace = run_directory / "workspace" / "repository"
+        if not plan_path.is_file() or not source_workspace.is_dir():
+            raise ServiceError(
+                "This run does not contain a persisted plan and source workspace."
+            )
+        try:
+            plan = ReproductionPlan.model_validate(
+                json.loads(plan_path.read_text(encoding="utf-8"))
+            )
+        except (OSError, ValueError, json.JSONDecodeError) as exc:
+            raise ServiceError("The persisted reproduction plan is invalid.") from exc
+        try:
+            with SQLiteRunStore(self.database_path) as store:
+                store.get_run(run_id)
+                execution = self.execution_factory(store)
+                recipe = recipe_from_plan(plan)
+                result = CleanRoomRunner(store, execution).run(
+                    recipe,
+                    source_workspace=source_workspace.resolve(),
+                    run_directory=run_directory / "reproduction-runs",
+                )
+        except (CleanRoomError, SandboxError, OSError) as exc:
+            raise ServiceError(f"Clean-room reproduction failed: {exc}") from exc
+        return ReproductionResult(
+            source_run_id=run_id,
+            clean_run_id=result.clean_run_id,
+            status=result.status,
+            verification=result.verification,
+            package_path=Path(result.clean_workspace).parent,
+        )
+
     def _prepare_intake(
         self, repository_url: str
     ) -> tuple[GitHubRepository, RunWorkspace]:
@@ -339,6 +388,22 @@ class AuditService:
         except (RepositoryUrlError, RunWorkspaceError) as exc:
             raise ServiceError(f"Repository intake failed: {exc}") from exc
         return repository, workspace
+
+    def _run_directory(self, run_id: str) -> Path:
+        if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.-]*", run_id):
+            raise ServiceError("Run ID contains unsupported path characters.")
+        root = self.runs_dir.resolve()
+        candidate_input = root / run_id
+        if candidate_input.is_symlink():
+            raise ServiceError("Run directory cannot be a symlink.")
+        candidate = candidate_input.resolve()
+        try:
+            candidate.relative_to(root)
+        except ValueError as exc:
+            raise ServiceError("Run ID escapes the configured runs directory.") from exc
+        if candidate.is_symlink() or not candidate.is_dir():
+            raise ServiceError("Run directory was not found.")
+        return candidate
 
     def _analyze(
         self,
