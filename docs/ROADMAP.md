@@ -19,7 +19,7 @@ BLOCKED
 
 # Current Phase
 
-## Phase 21 — Local API
+## Phase 22 — Local Frontend / Dashboard
 
 **Status: DONE**
 
@@ -828,9 +828,36 @@ documented as a local development/control API rather than a public service.
 
 ---
 
+# Phase 22 — Local Frontend / Dashboard
+
+**Status: DONE**
+
+## Goal
+
+Provide a maintainable local dashboard over the Phase 21 API without public
+hosting or client-side secret exposure.
+
+## Build
+
+* Vite + React + TypeScript single-page dashboard,
+* new-audit form, prior-run list, run detail, timeline, evidence summary, and
+  bounded report view,
+* explicit loading, empty, error, active, reproduced, partial, blocked, failed,
+  and unsafe status presentation,
+* bounded polling for non-terminal runs and loopback API proxy,
+* escaped text rendering and API-client validation tests.
+
+## Acceptance Criteria
+
+Typecheck, lint-equivalent TypeScript validation, component/API/security tests,
+production build, and a local frontend-to-API proxy smoke test pass. The
+dashboard is local-only and contains no provider credentials.
+
+---
+
 # Current Next Action
 
-Phase 20 acceptance criteria have passed. Phase 21 is the next requested phase.
+Phase 20–22 acceptance criteria have passed. Phase 23 is the next requested phase.
 
 ```text
 Phase 14 → DONE
@@ -841,4 +868,6 @@ Phase 18 → DONE
 Phase 19 → DONE
 Phase 20 → DONE
 Phase 21 → DONE
+Phase 22 → DONE
+Phase 23 → NOT STARTED
 ```

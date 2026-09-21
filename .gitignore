@@ -12,6 +12,10 @@ htmlcov/
 .idea/
 .DS_Store
 Thumbs.db
+node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/coverage/
 
 runs/*
 !runs/.gitkeep
