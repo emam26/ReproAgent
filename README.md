@@ -7,7 +7,7 @@ evidence-backed results.
 
 ## Development status
 
-Phases 0–10 are complete. The current CLI accepts supported public GitHub URLs,
+Phases 0–17 are complete. The current CLI accepts supported public GitHub URLs,
 clones them into an isolated run workspace, and generates a deterministic
 structural manifest. The programmatic pipeline can analyze a manifest, create a
 finite plan, and execute that plan in Docker with persisted evidence. Full CLI
@@ -177,3 +177,12 @@ append-only event stream. It captures durations, attempts, repairs, LLM usage,
 failure categories, verification/status, Docker identities, and network modes
 without introducing a second logging backend or copying raw event payloads. See
 [`docs/OBSERVABILITY.md`](docs/OBSERVABILITY.md).
+
+## Evaluation set
+
+Phase 17 adds a versioned offline set of 20 controlled evaluation contracts
+covering success, repair, dependency/runtime, asset/network, configuration,
+test/output, resource, safety, documentation, and clean-room cases. The labels
+are benchmark expectations, not observed reproduction results; execution and
+scoring remain separate evaluation work. See
+[`docs/EVALUATION_SET.md`](docs/EVALUATION_SET.md).

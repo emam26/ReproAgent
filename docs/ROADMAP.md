@@ -706,19 +706,44 @@ remain secret-free, and have fixture coverage for normal and failed runs.
 
 # Phase 17 — Evaluation Set
 
+**Status: DONE**
+
+## Goal
+
+Create a versioned, reproducible benchmark contract before measuring system
+performance.
+
+## Build
+
+* 20 bounded controlled fixture contracts,
+* explicit provenance, strata, expected statuses, and verification levels,
+* deterministic coverage summaries and path validation,
+* no execution or fabricated observed results.
+
+## Acceptance Criteria
+
+The evaluation set loads offline, has stable sequential IDs, covers positive and
+negative regimes, rejects unsafe or duplicate fixture paths, and keeps expected
+labels separate from future observed outcomes.
+
+---
+
+# Phase 18 — System Evaluation
+
 **Status: NOT STARTED**
 
-Phase 17 is the next implementation phase.
+Phase 18 is the next implementation phase.
 
 ---
 
 # Current Next Action
 
-Phase 16 acceptance criteria have passed; Phase 17 is not started.
+Phase 17 acceptance criteria have passed; Phase 18 is not started.
 
 ```text
 Phase 14 → DONE
 Phase 15 → DONE
 Phase 16 → DONE
-Phase 17 → NOT STARTED
+Phase 17 → DONE
+Phase 18 → NOT STARTED
 ```
