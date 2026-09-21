@@ -186,3 +186,11 @@ test/output, resource, safety, documentation, and clean-room cases. The labels
 are benchmark expectations, not observed reproduction results; execution and
 scoring remain separate evaluation work. See
 [`docs/EVALUATION_SET.md`](docs/EVALUATION_SET.md).
+
+## System evaluation
+
+Phase 18 compares one typed observed result per case with the evaluation
+contracts and reports status/verification accuracy, confusion matrices, failure
+strata, repair and intervention rates, stage success, runtime, agent steps, and
+LLM calls. It does not execute repositories or infer success from LLM prose. See
+[`docs/SYSTEM_EVALUATION.md`](docs/SYSTEM_EVALUATION.md).

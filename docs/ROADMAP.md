@@ -730,20 +730,45 @@ labels separate from future observed outcomes.
 
 # Phase 18 — System Evaluation
 
+**Status: DONE**
+
+## Goal
+
+Measure the system against the controlled contracts without confusing expected
+labels with observed evidence.
+
+## Build
+
+* one bounded adapter call per evaluation case,
+* deterministic status/verification accuracy and confusion matrices,
+* failure strata, repair success, intervention, stage, runtime, and usage metrics,
+* explicit mismatch reporting and no LLM-derived verification authority.
+
+## Acceptance Criteria
+
+Evaluation reports are reproducible, reject missing/duplicate/foreign cases,
+preserve stable case order, and keep observed facts separate from the benchmark
+contracts.
+
+---
+
+# Phase 19 — Baselines + Ablations
+
 **Status: NOT STARTED**
 
-Phase 18 is the next implementation phase.
+Phase 19 is the next implementation phase.
 
 ---
 
 # Current Next Action
 
-Phase 17 acceptance criteria have passed; Phase 18 is not started.
+Phase 18 acceptance criteria have passed; Phase 19 is not started.
 
 ```text
 Phase 14 → DONE
 Phase 15 → DONE
 Phase 16 → DONE
 Phase 17 → DONE
-Phase 18 → NOT STARTED
+Phase 18 → DONE
+Phase 19 → NOT STARTED
 ```
