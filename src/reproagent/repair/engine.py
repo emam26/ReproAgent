@@ -17,15 +17,19 @@ from .models import (
     RepairLimits,
     RepairObservation,
 )
-from .plan import AppliedPlanRepair, RepairNotExecutableError
+from .plan import RepairNotExecutableError
 from .policy import RepairPolicyError, validate_repair_action
 
 
 class RepairBackend(Protocol):
-    def apply(self, action: RepairAction) -> AppliedPlanRepair: ...
+    def apply(self, action: RepairAction) -> RepairApplication: ...
 
 
-ObservationFunction = Callable[[AppliedPlanRepair], RepairObservation]
+class RepairApplication(Protocol):
+    def rollback(self) -> object: ...
+
+
+ObservationFunction = Callable[[RepairApplication], RepairObservation]
 
 
 class RepairExperimentEngine:

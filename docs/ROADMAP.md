@@ -19,7 +19,7 @@ BLOCKED
 
 # Current Phase
 
-## Phase 9 — Controlled Repair Tools
+## Phase 10 — Controlled File Editing & Rollback
 
 **Status: DONE**
 
@@ -535,7 +535,7 @@ repetition blocking, persistence, unsafe inputs, and rollback metadata.
 
 # Phase 10 — Controlled File Editing & Rollback
 
-**Status: NOT STARTED**
+**Status: DONE**
 
 ## Goal
 
@@ -547,8 +547,8 @@ controlled intake-to-retry pipeline for end-to-end fixtures.
 * workspace-confined read, replacement, patch, diff, and rollback tools,
 * path, symlink, file-size, patch-size, and changed-file limits,
 * original/new hashes and `patches.diff` audit artifact,
-* controlled CLI pipeline wiring,
-* working, repaired, and policy-stopped Docker fixtures.
+* controlled execution-to-diagnosis-to-retry pipeline wiring,
+* working, repaired, and policy-stopped Docker-backed fixtures.
 
 ## Acceptance Criteria
 
@@ -769,9 +769,9 @@ Do not work on this until repository-level reproduction is reliable.
 
 # Current Next Action
 
-Phase 9 acceptance criteria have passed.
+Phase 10 acceptance criteria have passed.
 
 ```text
-Phase 9 → DONE
-Phase 10 → NOT STARTED
+Phase 10 → DONE
+Phase 11 → NOT STARTED
 ```

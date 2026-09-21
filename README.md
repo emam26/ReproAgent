@@ -7,7 +7,7 @@ evidence-backed results.
 
 ## Development status
 
-Phases 0–9 are complete. The current CLI accepts supported public GitHub URLs,
+Phases 0–10 are complete. The current CLI accepts supported public GitHub URLs,
 clones them into an isolated run workspace, and generates a deterministic
 structural manifest. The programmatic pipeline can analyze a manifest, create a
 finite plan, and execute that plan in Docker with persisted evidence. Full CLI
@@ -120,3 +120,12 @@ risk and repetition limits; objective before/after observations; rollback
 metadata; and append-only repair events. It performs no host execution,
 repository mutation, download, or global Docker management. See
 [`docs/REPAIRS.md`](docs/REPAIRS.md).
+
+## Controlled workspace repairs and rollback
+
+Phase 10 adds workspace-confined UTF-8 reads, exact replacements, unified
+patches, SHA-256 before/after evidence, size/path/symlink limits, exact
+`patches.diff` artifacts, conflict-aware rollback, and a Docker-only repair
+retry boundary. A successful retry remains an experiment until formal
+verification and clean-room reproduction. See
+[`docs/WORKSPACE_REPAIRS.md`](docs/WORKSPACE_REPAIRS.md).

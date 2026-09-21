@@ -37,6 +37,7 @@ class RunArtifacts:
             events_jsonl=str(self.run_directory / "events.jsonl"),
             setup_log=str(self.run_directory / "logs" / "setup.log"),
             execution_log=str(self.run_directory / "logs" / "execution.log"),
+            patches_diff=str(self.run_directory / "patches.diff"),
             workspace=str(self.workspace),
         )
 

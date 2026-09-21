@@ -114,17 +114,22 @@ class PlanExecutionEngine:
         run_id: str,
         run_directory: Path,
         workspace: Path,
+        allow_repair: bool = False,
+        finalize: bool = True,
     ) -> ExecutionRunResult:
         state = self.store.get_run(run_id)
-        if state.stage is not Stage.PLAN:
+        if state.stage not in {Stage.PLAN, Stage.DEBUG}:
             raise ExecutionEngineError(
-                f"Execution requires PLAN stage; run is at {state.stage.value}."
+                f"Execution requires PLAN or DEBUG stage; run is at {state.stage.value}."
             )
         artifacts = RunArtifacts.create(run_directory, workspace)
         started_at = datetime.now(UTC)
         started_monotonic = time.monotonic()
-        self.store.transition(run_id, Stage.SETUP)
-        self.store.transition(run_id, Stage.EXECUTE)
+        if state.stage is Stage.PLAN:
+            self.store.transition(run_id, Stage.SETUP)
+            self.store.transition(run_id, Stage.EXECUTE)
+        else:
+            self.store.transition(run_id, Stage.EXECUTE)
         step_results: list[StepExecutionResult] = []
         failure_kind: ExecutionFailureKind | None = None
         failed_step_id: str | None = None
@@ -196,10 +201,13 @@ class PlanExecutionEngine:
                             step_results[-1].step_id if step_results else None
                         )
 
-        self.store.transition(run_id, Stage.VERIFY)
-        self.store.transition(run_id, Stage.REPORT)
-        outcome = RunOutcome.SUCCEEDED if failure_kind is None else RunOutcome.FAILED
-        self.store.finish(run_id, outcome)
+        if not finalize or (failure_kind is not None and allow_repair):
+            self.store.transition(run_id, Stage.DEBUG)
+        else:
+            self.store.transition(run_id, Stage.VERIFY)
+            self.store.transition(run_id, Stage.REPORT)
+            outcome = RunOutcome.SUCCEEDED if failure_kind is None else RunOutcome.FAILED
+            self.store.finish(run_id, outcome)
         artifacts.write_events(self.store.list_events(run_id))
         finished_at = datetime.now(UTC)
         return ExecutionRunResult(

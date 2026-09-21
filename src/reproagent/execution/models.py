@@ -51,6 +51,7 @@ class RunArtifactPaths(BaseModel):
     events_jsonl: str
     setup_log: str
     execution_log: str
+    patches_diff: str
     workspace: str
 
 
