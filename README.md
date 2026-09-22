@@ -4,6 +4,7 @@
 
 [![CI](https://github.com/emam26/ReproAgent/actions/workflows/ci.yml/badge.svg)](https://github.com/emam26/ReproAgent/actions/workflows/ci.yml)
 ![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-3776AB)
+![License: MIT](https://img.shields.io/badge/license-MIT-green)
 
 ReproScout helps answer a practical question: **can someone reproduce this
 research repository from a clean environment, and what evidence explains the
@@ -289,7 +290,6 @@ npm test
 npm run build
 ```
 
-Contributions should also follow [`CONTRIBUTING.md`](CONTRIBUTING.md). The
-project is pre-release, and no license has been selected yet; do not infer
-redistribution or deployment permission. See [`CHANGELOG.md`](CHANGELOG.md) for
-the current release history.
+Contributions should also follow [`CONTRIBUTING.md`](CONTRIBUTING.md). ReproScout
+is licensed under the [MIT License](LICENSE). See [`CHANGELOG.md`](CHANGELOG.md)
+for the current release history.
