@@ -1,130 +1,242 @@
-# ReproAgent
+# 🧭 ReproScout
 
-ReproAgent is a local reproducibility auditor for public Python and AI/ML
-repositories. It asks a practical question:
+> Autonomous agent for reproducing, diagnosing, and repairing open-source research projects.
 
-> Can a new user reproduce this project from a clean environment, and what
-> objective evidence supports the answer?
+[![CI](https://github.com/emam26/ReproAgent/actions/workflows/ci.yml/badge.svg)](https://github.com/emam26/ReproAgent/actions/workflows/ci.yml)
+![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-3776AB)
 
-The system performs deterministic repository intake and analysis, creates a
-bounded documented-first plan, runs target commands only inside Docker,
-captures failures and diagnosis evidence, objectively verifies recorded facts,
-reruns successful workflows in a fresh clean-room workspace, and writes a
-schema-versioned report. An LLM may interpret ambiguity; it never decides
-whether reproduction succeeded.
+ReproScout helps answer a practical question: **can someone reproduce this
+research repository from a clean environment, and what evidence explains the
+answer?** Give it a public GitHub repository. It inspects the project, follows
+its documented workflow, runs target commands in Docker, records failures,
+diagnoses likely causes, and produces an evidence-backed report.
 
-This is research and engineering software, not a hosted service. PyPI
-publication, public dashboard hosting, paper-result reproduction, and
-production multi-tenant execution are not included.
+> [!NOTE]
+> ReproScout is pre-release. The approved product name is already used for
+> branding, but this checkout still exposes the `reproagent` Python package and
+> CLI until the separate package-rename work is completed. The commands below
+> are therefore intentionally `reproagent`.
 
-## Current capabilities
+## What is ReproScout?
 
-* public HTTPS GitHub intake with exact commit capture and structural manifests;
-* deterministic-first Python project analysis and finite plan generation;
-* Docker-only sequential execution with resource, timeout, network, and output
-  bounds;
-* typed diagnostics, optional provider-independent LLM reasoning, controlled
-  repair primitives, objective verification, final status, clean-room reruns,
-  observability, evaluation contracts, and evidence-backed reports;
-* a local CLI, optional local FastAPI control API, and local React/TypeScript
-  dashboard;
-* offline mock-provider tests and controlled Docker fixtures.
+ReproScout is a reproducibility auditor for public Python research and AI/ML
+projects. It is more than a static file checker: it can inspect a repository,
+build a bounded plan, execute that plan in a Docker sandbox, collect evidence,
+and let deterministic verification decide the result.
 
-The public `audit` workflow records deterministic diagnosis when a run fails.
-It does not invent or silently apply an automatic source repair: the existing
-repair tools are exposed as bounded library capabilities and a future phase can
-wire a complete repair policy into the public workflow when that is justified.
+```text
+Repository → Inspect → Plan → Docker execution → Diagnose → Verify → Report
+```
 
-## Installation from source
+The core also contains policy-checked repair experiments and clean-room replay
+support. The public `audit` command does not silently modify a target repository
+or claim an automatic source repair.
 
-Python 3.11 or newer and Docker are required for target execution. Docker is
-not required for deterministic unit tests.
+## Why ReproScout?
+
+Research repositories often depend on undocumented Python versions, stale
+packages, missing assets, incorrect paths, or machine-specific assumptions.
+Finding the real blocker manually can take hours. ReproScout automates the
+audit while preserving the commands, outputs, failures, environment facts, and
+verification evidence needed to review what happened.
+
+## How it works
+
+1. **Intake** — validate a public GitHub URL, clone it with sterile Git settings,
+   and record the exact commit.
+2. **Analyze** — inspect README instructions, dependency files, tests, Docker,
+   and other bounded project context.
+3. **Plan** — create a finite workflow from documented and detected commands.
+4. **Execute** — install and run target commands only inside a bounded Docker
+   sandbox.
+5. **Diagnose** — normalize failures and build a bounded evidence bundle;
+   optional LLM reasoning can explain ambiguous failures.
+6. **Repair and retry** — use typed, policy-checked repair capabilities when a
+   controlled repair experiment is explicitly run.
+7. **Verify** — check exit codes, tests, artifacts, and configured expectations
+   with deterministic code.
+8. **Clean-room rerun** — rerun successful workflows in a fresh workspace when
+   the verification contract requires it.
+9. **Report** — write machine-readable state and a human-readable summary.
+
+## Where AI is used
+
+Deterministic tools handle repository inspection, dependency parsing, command
+execution, failure capture, state transitions, and verification. An LLM is
+optional and is used only for interpretation: understanding ambiguous setup
+instructions, forming failure hypotheses, or selecting among permitted repair
+options.
+
+> [!IMPORTANT]
+> The LLM never decides that reproduction succeeded. The verifier decides from
+> recorded execution and artifact evidence.
+
+## Quick start
+
+ReproScout is not published to PyPI yet. Install the current development
+checkout instead. Python 3.11+ and Docker are required for target execution.
 
 ```bash
 git clone https://github.com/emam26/ReproAgent.git
 cd ReproAgent
 python -m venv .venv
-# macOS/Linux
-source .venv/bin/activate
-# Windows PowerShell
-.venv\Scripts\Activate.ps1
-
+source .venv/bin/activate          # Windows: .venv\Scripts\Activate.ps1
 python -m pip install -e .
 ```
 
-For development and API tests:
+Check prerequisites and inspect a repository without executing its code:
 
 ```bash
-python -m pip install -e ".[dev]"
+reproagent doctor
+reproagent inspect https://github.com/user/project --no-ai
 ```
 
-The optional API runtime is isolated from CLI-only users:
+Run a bounded audit:
 
 ```bash
-python -m pip install -e ".[api]"
+reproagent audit https://github.com/user/project --goal auto --no-ai
 ```
 
-## Quick start
+Use `--runs-dir ./local-runs` when you want artifacts stored in a specific
+directory. The command prints the run ID, status, verification level, attempts,
+report path, and clean-room package path when available.
 
-Inspect a repository without executing its code:
+## What happens when a repository fails?
 
-```bash
-reproagent inspect https://github.com/user/repository --no-ai
+ReproScout does not hide a failed command behind an LLM explanation. It keeps
+the deterministic failure class and bounded evidence, then records any optional
+diagnosis separately. A diagnosis is a hypothesis, not proof, and a proposed
+repair cannot bypass the repair policy or verifier.
+
+An illustrative report might distinguish:
+
+```text
+Official documented reproduction: FAILED
+Agent-assisted reproduction: PARTIAL
+
+Evidence: dependency installation failed under the documented environment
+Diagnosis: an undocumented Python-version constraint is likely
+Verification: reproduction not claimed until required checks pass
 ```
 
-Run the bounded audit:
+The result is one of:
 
-```bash
-reproagent audit https://github.com/user/repository --goal auto --no-ai
+| Status | Meaning |
+| --- | --- |
+| `REPRODUCED` | Required objective checks and any required clean-room rerun passed. |
+| `PARTIAL` | The workflow is not fully confirmed, or required verification is incomplete. |
+| `BLOCKED` | Required evidence or a safe verification path is unavailable. |
+| `FAILED` | Execution or an objective verification condition failed. |
+| `UNSAFE` | A deterministic safety check rejected the workflow. |
+
+## CLI
+
+The current CLI is deliberately small:
+
+| Command | Purpose |
+| --- | --- |
+| `doctor` | Check local prerequisites without revealing credentials. |
+| `inspect <url>` | Clone and analyze a repository without executing target code. |
+| `audit <url>` | Run intake, analysis, Docker execution, verification, and reporting. |
+| `runs` | List persisted runs. |
+| `status <run-id>` | Show persisted control-plane state. |
+| `report <run-id>` | Display a run's Markdown report. |
+| `cleanup` | Remove only explicitly owned Docker containers. |
+| `version` | Print the installed version. |
+| `serve` | Start the optional local API. |
+
+See [`docs/CLI.md`](docs/CLI.md) for options and machine-readable output.
+
+## Output and reports
+
+Each audit stores its evidence under the configured runs directory. Depending
+on the workflow, a run can contain:
+
+```text
+report.md          human-readable result
+run.json           schema-versioned report data
+events.jsonl       state and tool events
+commands.jsonl     executed command records
+environment.json   captured environment facts
+patches.diff       repair changes, when applicable
+reproduce.sh       a bounded reproduction recipe, when applicable
 ```
 
-The command reports the run ID, objective status, verification level, attempts,
-repairs, report path, and clean-room package path when available. Use a private
-runs directory if reports may contain project-specific information:
+Reports distinguish the documented workflow from any agent-assisted evidence.
+Review artifacts before sharing them: they may contain project-specific paths,
+outputs, or failure details.
 
-```bash
-reproagent audit https://github.com/user/repository --runs-dir ./local-runs
-reproagent runs --runs-dir ./local-runs
-reproagent status <run-id> --runs-dir ./local-runs
-reproagent report <run-id> --runs-dir ./local-runs
-```
+## Current scope
 
-Other public commands are `doctor`, `config`, `cleanup`, `version`, and the
-compatibility `run` intake-only command. `cleanup` removes only containers
-labelled as ReproAgent-managed and can be restricted to one run ID. There is no
-arbitrary shell command or arbitrary host-path command in the CLI.
+The first release focuses on:
+
+- public HTTPS GitHub repositories;
+- Python projects, including common `requirements.txt`, `pyproject.toml`,
+  `setup.py`, `setup.cfg`, and environment hints;
+- documented installs, tests, lightweight demos, and primarily CPU workflows;
+- Docker-backed execution with bounded time, output, resources, and network;
+- pytest-oriented verification and evidence-backed reporting.
+
+It is not intended to reproduce multi-day training runs, multi-GPU systems,
+giant datasets, full paper metrics, private or license-restricted assets, or
+arbitrary operating systems.
+
+## Safety
+
+Target repository code is untrusted. ReproScout uses Docker as a defense-in-
+depth boundary and does not fall back to executing target code on the host.
+Sandboxes are non-privileged, drop capabilities, use `no-new-privileges`, and
+apply workspace, timeout, output, and resource limits. The Docker socket and
+host credentials are not mounted, and network access is denied unless the
+bounded plan explicitly requires it.
+
+Cleanup matches only containers explicitly owned by this tool; it never
+performs global Docker cleanup.
+
+> [!WARNING]
+> Docker is not a perfect hostile-code or malware boundary. Do not expose the
+> local API to the public Internet, mount the Docker socket, or use ReproScout
+> with highly sensitive host data.
+
+See [`SECURITY.md`](SECURITY.md) for the security policy and limitations.
 
 ## LLM providers
 
-The default analysis path is deterministic and offline. `--no-ai` explicitly
-disables optional LLM interpretation and diagnosis. If AI is enabled, provider
-selection and credentials come only from environment variables:
+LLM use is optional. The default path is deterministic and can run with
+`--no-ai`; offline tests use the mock provider. Gemini and Groq adapters exist,
+but this pre-release README does not claim live validation for either provider.
 
-```text
-LLM_PROVIDER=mock|gemini|groq
-LLM_MODEL=<provider model when required>
-GEMINI_API_KEY=<secret, never committed>
-GROQ_API_KEY=<secret, never committed>
+If you explicitly enable a provider, configure credentials through environment
+variables only:
+
+```bash
+LLM_PROVIDER=gemini
+LLM_MODEL=<provider-model>
+GEMINI_API_KEY=<your-key>
 ```
 
-Use `.env.example` as a names-only template. Keys are never printed, persisted,
-returned by the API, placed in reports/events/commands, or bundled into the
-dashboard. Normal tests use `MockLLMProvider` and do not consume provider quota.
+Never commit or paste credentials into repositories, reports, prompts, or issue
+threads. Provider quota and rate limits are controlled by the provider.
+
+> [!TIP]
+> Use `--no-ai` or the mock provider while developing so ordinary tests remain
+> offline and do not consume provider quota.
 
 ## Local API and dashboard
 
-Start the local API on loopback:
+The optional FastAPI control API uses the same application service as the CLI
+and binds to loopback by default:
 
 ```bash
+python -m pip install -e ".[api]"
 reproagent serve
 ```
 
-It exposes `/api/v1/health`, `/version`, audit submission, run listing/detail,
-events, reports, and persisted-plan clean-room replay. The API is explicitly a
-local development/control API, not a hardened multi-tenant public execution
-service. See [`docs/API.md`](docs/API.md).
+The API exposes versioned health, audit, run, event, report, and persisted-plan
+replay endpoints. It is a local development/control API, not a hardened
+multi-tenant service. See [`docs/API.md`](docs/API.md).
 
-The dashboard is not part of the Python wheel. From a source checkout:
+The React/TypeScript dashboard is source-checkout tooling:
 
 ```bash
 cd frontend
@@ -132,69 +244,29 @@ npm install
 npm run dev
 ```
 
-It serves on `127.0.0.1:5173` and proxies to the local API on port 8000. It
-provides new-audit, runs, run-detail, timeline, evidence, and report views. See
-[`docs/DASHBOARD.md`](docs/DASHBOARD.md).
+See [`docs/DASHBOARD.md`](docs/DASHBOARD.md) for the local workflow.
 
 ## Architecture
 
 ```text
-repository URL
-    ↓
-intake → analysis → planning → Docker sandbox → execution
-                                      ↓
-                         diagnostics / bounded reasoning
-                                      ↓
-                   objective verification → clean-room rerun
-                                      ↓
-                              status → report
+CLI / API / Dashboard
+          ↓
+      ReproScout core
+          ↓
+Intake → Analysis → Plan → Docker execution
+                              ↓
+                    Diagnosis / repair policy
+                              ↓
+                         Verification
+                              ↓
+                    Clean-room rerun → Report
 ```
 
-The control plane persists SQLite state and append-only events. The central
-separation is:
+The governing separation is: **LLM = reasoning, tools = execution, state =
+control, verifier = truth, Docker = isolation.** See
+[`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for the detailed design.
 
-```text
-LLM = reasoning       Tools = facts + execution
-State = control       Verifier = truth
-Docker = isolation
-```
-
-See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) and the focused documents in
-[`docs/`](docs/).
-
-## Example result
-
-```text
-Reproducibility audit complete.
-
-Run ID: 3e3d...
-Status: REPRODUCED
-Verification: L2
-Attempts: 2
-Repairs: 0
-Report: runs/3e3d.../report.md
-Reproduction package: runs/3e3d.../clean-room-runs/clean-room-.../
-```
-
-`REPRODUCED` requires objective target evidence and a successful clean-room
-rerun. `PARTIAL`, `BLOCKED`, `FAILED`, and `UNSAFE` are not success states.
-
-## Security model and limitations
-
-Target repository code is untrusted. ReproAgent does not execute it on the
-host, does not mount host credentials or the Docker socket, drops Linux
-capabilities, enables `no-new-privileges`, applies resource/workspace bounds,
-and denies network access unless a plan explicitly requires it. Git intake is
-noninteractive and avoids recursive submodules and LFS smudge.
-
-Docker is defense in depth, not a perfect hostile-code boundary. Do not run the
-tool against highly sensitive material, do not expose the Docker daemon socket,
-and do not expose the local API publicly. Public GitHub HTTPS repositories and
-primarily CPU-runnable Python projects are the supported V1 scope; private
-repositories, arbitrary operating systems, multi-GPU training, giant datasets,
-and paper-result reproduction are outside this release.
-
-## Development and testing
+## Development
 
 ```bash
 python -m pip install -e ".[dev]"
@@ -203,21 +275,21 @@ ruff check .
 ruff format --check .
 ```
 
-Docker integration tests are marked separately:
+Docker integration tests are explicit:
 
 ```bash
 pytest -m docker
 ```
 
-Frontend validation is run from `frontend/` with `npm run lint`, `npm test`,
-and `npm run build`. The CI workflow runs ordinary Python and frontend checks;
-Docker integration remains an explicit local/controlled operation.
+Frontend checks run from `frontend/`:
 
-## Project status and license
+```bash
+npm run lint
+npm test
+npm run build
+```
 
-Phases 0–23 are implemented in the repository roadmap. Phase 24 activities
-(publication, deployment, and production infrastructure) have not started.
-
-No license has been selected in this repository. Contributors should not infer
-permission to redistribute or deploy the project until the maintainers make and
-document that legal decision.
+Contributions should also follow [`CONTRIBUTING.md`](CONTRIBUTING.md). The
+project is pre-release, and no license has been selected yet; do not infer
+redistribution or deployment permission. See [`CHANGELOG.md`](CHANGELOG.md) for
+the current release history.
